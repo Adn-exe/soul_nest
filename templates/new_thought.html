@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Soul Nest - New Thought{% endblock %}
+{% block content %}
+<div class="form-box">
+    <h2>New Thought</h2>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <form method="POST">
+        <div class="form-group">
+            <label for="content">Your Thought</label>
+            <textarea id="content" name="content" class="form-control" rows="5" required placeholder="Share your thoughts..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Share Thought</button>
+    </form>
+</div>
+{% endblock %}

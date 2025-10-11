@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Soul Nest - Feed{% endblock %}
+{% block content %}
+<div class="feed-container">
+    {% if thoughts %}
+        {% for thought in thoughts %}
+            <div class="thought-card">
+                <div class="thought-meta">
+                    By <strong>{{ thought.user.username }}</strong> • 
+                    {{ thought.timestamp.strftime('%b %d, %Y • %H:%M') }}
+                </div>
+                <p class="thought-content mt-2">{{ thought.content }}</p>
+                {% if thought.user_id == current_user.id %}
+                    <form action="{{ url_for('delete_thought', id=thought.id) }}" method="POST" class="mt-3">
+                        <button type="submit" class="btn btn-danger btn-sm">
+                            Delete Thought
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="no-thoughts text-center mt-5">
+            <h3>No thoughts yet... 🌱</h3>
+            <p>Share your first thought to start building your soul nest!</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+{% endblock %}

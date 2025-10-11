@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}Soul Nest{% endblock %}
+{% block content %}
+<div class="content container">
+    <!-- Hero Section -->
+    <section class="hero text-center mt-5" style="padding: 4rem 1rem;">
+        <h1 style="
+            font-size: 3rem; 
+            font-weight: 700; 
+            background: linear-gradient(90deg, #3182ce, #8b97c8); 
+            -webkit-background-clip: text; 
+            background-clip: text; 
+            color: transparent; 
+        ">
+            Welcome to Community of Souls
+        </h1>
+        <p style="font-size: 1.25rem; color: var(--text-dark); margin-top: 1rem; max-width: 650px; margin-left: auto; margin-right: auto;">
+            Soul Nest is a space to share your thoughts, feelings, and emotions that are hard to express in day-to-day life. Open up, connect, and be heard in a safe community of like-minded souls.
+        </p>
+    </section>
+    <!-- Featured Thoughts Section -->
+    <section class="featured-thoughts mt-5">
+        <h2 class="text-center mb-4" style="font-weight: 700; color: var(--text-dark);">Featured Thoughts</h2>
+        <div class="d-flex flex-wrap justify-content-center gap-4 mt-4"> 
+            {% for thought in featured_thoughts %}
+            <div class="thought-card" style="
+                flex: 0 0 300px; 
+                padding: 1.5rem; 
+                border-radius: 15px; 
+                background: rgba(255,255,255,0.85); 
+                backdrop-filter: blur(8px); 
+                box-shadow: 0 12px 25px rgba(0,0,0,0.2); 
+                transition: transform 0.3s, box-shadow 0.3s;
+            ">
+                <p style="font-size: 1rem; color: var(--text-dark);">{{ thought.content }}</p>
+                <div class="thought-meta" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">
+                    By {{ thought.author.username }} • {{ thought.created_at.strftime('%b %d, %Y') }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    <!-- How Soul Nest Works Section -->
+    <section class="features mt-5 text-center">
+        <h2 style="font-weight: 700; color: var(--text-dark);">How Soul Nest Works</h2>
+        <div class="d-flex flex-wrap justify-content-center mt-4" style="gap: 2rem;">  
+            <div style="
+                flex: 0 0 220px; 
+                padding: 1.5rem; 
+                border-radius: 15px; 
+                background: rgba(255,255,255,0.85); 
+                box-shadow: 0 12px 25px rgba(0,0,0,0.2); 
+                transition: transform 0.3s, box-shadow 0.3s;
+            ">
+                <h3 style="font-size: 1.2rem; font-weight: 600;">Share Feelings</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Open your heart and express what you can’t say elsewhere.</p>
+            </div>
+            <div style="
+                flex: 0 0 220px; 
+                padding: 1.5rem; 
+                border-radius: 15px; 
+                background: rgba(255,255,255,0.85); 
+                box-shadow: 0 12px 25px rgba(0,0,0,0.2); 
+                transition: transform 0.3s, box-shadow 0.3s;
+            ">
+                <h3 style="font-size: 1.2rem; font-weight: 600;">Connect Deeply</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Engage with a community that understands and supports you.</p>
+            </div>
+            <div style="
+                flex: 0 0 220px; 
+                padding: 1.5rem; 
+                border-radius: 15px; 
+                background: rgba(255,255,255,0.85); 
+                box-shadow: 0 12px 25px rgba(0,0,0,0.2); 
+                transition: transform 0.3s, box-shadow 0.3s;
+            ">
+                <h3 style="font-size: 1.2rem; font-weight: 600;">Discover Insights</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">Read others’ thoughts and find perspectives that resonate with you.</p>
+            </div>
+        </div>
+    </section>
+</div>
+<!-- Inline Styles for Animations & Hover Effects -->
+<style>
+    body {
+        background: linear-gradient(45deg, #a8d8ea 0%, #8b97c8 100%);
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
+    }
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    .thought-card:hover, .features div:hover {
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: 0 16px 30px rgba(0,0,0,0.25);
+    }
+</style>
+{% endblock %}
