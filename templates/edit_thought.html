@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Soul Nest - New Thought{% endblock %}
+{% block title %}Soul Nest - Edit Thought{% endblock %}
 
 {% block content %}
 <div class="form-box" data-aos="fade-up" style="
@@ -22,7 +22,7 @@
         background-clip: text;
         color: transparent;
         margin-bottom: 1.5rem;
-    ">Share a New Thought</h2>
+    ">Edit Your Thought</h2>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -37,7 +37,7 @@
     <form method="POST">
         <div class="form-group" style="margin-bottom: 1.5rem; position: relative;">
             <label for="content" style="font-weight: 600; color: #555; font-family: 'PT Serif', serif;">Your Thought</label>
-            <textarea id="content" name="content" class="form-control" rows="5" required placeholder="Share your thoughts..." style="
+            <textarea id="content" name="content" class="form-control" rows="5" required placeholder="Update your thought..." style="
                 width: 100%;
                 padding: 0.75rem;
                 border: 1px solid #ced4da;
@@ -45,26 +45,25 @@
                 font-size: 1rem;
                 font-family: 'PT Serif', serif;
                 transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
-            "></textarea>
+            ">{{ thought.content }}</textarea>
         </div>
 
-        <!-- Mood Selector -->
         <div class="form-group" style="margin-bottom: 1.5rem;">
             <label for="mood" style="font-weight: 600; color: #555; font-family: 'PT Serif', serif;">Mood</label>
             <select id="mood" name="mood" class="form-control" style="
                 width: 100%;
-                padding: 0.65rem;
-                border: 1px solid #ced4da;
+                padding: 0.5rem;
                 border-radius: 12px;
+                border: 1px solid #ced4da;
                 font-family: 'PT Serif', serif;
                 font-size: 1rem;
-                transition: border-color 0.3s ease, box-shadow 0.3s ease;
             ">
-                <option value="calm">Calm</option>
-                <option value="happy">Happy</option>
-                <option value="thoughtful">Thoughtful</option>
-                <option value="inspired">Inspired</option>
-                <option value="sad">Sad</option>
+                <option value="thoughtful" {% if thought.mood == 'thoughtful' %}selected{% endif %}>Thoughtful</option>
+                <option value="happy" {% if thought.mood == 'happy' %}selected{% endif %}>Happy</option>
+                <option value="calm" {% if thought.mood == 'calm' %}selected{% endif %}>Calm</option>
+                <option value="sad" {% if thought.mood == 'sad' %}selected{% endif %}>Sad</option>
+                <option value="excited" {% if thought.mood == 'excited' %}selected{% endif %}>Excited</option>
+                <option value="inspired" {% if thought.mood == 'inspired' %}selected{% endif %}>Inspired</option>
             </select>
         </div>
 
@@ -80,12 +79,11 @@
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
         " onmouseover="this.style.transform='scale(1.03)';" onmouseout="this.style.transform='scale(1)';">
-            Share Thought
+            Update Thought
         </button>
     </form>
 </div>
 
-<!-- Subtle hover effect for the form box -->
 <style>
 .form-box:hover {
     transform: translateY(-4px) scale(1.01);

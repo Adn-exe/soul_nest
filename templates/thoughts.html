@@ -1,32 +1,105 @@
 {% extends "base.html" %}
 {% block title %}Soul Nest - Feed{% endblock %}
+
 {% block content %}
-<div class="feed-container">
+<div class="feed-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
+
     {% if thoughts %}
         {% for thought in thoughts %}
-            <div class="thought-card">
-                <div class="thought-meta">
-                    By <strong>{{ thought.user.username }}</strong> • 
-                    {{ thought.timestamp.strftime('%b %d, %Y • %H:%M') }}
+            <div class="thought-card mood-{{ thought.mood }}" data-aos="fade-up" style="
+                padding: 1.8rem 2rem;
+                border-radius: 15px;
+                box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+                transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.4s ease;
+            "
+            onmouseover="this.style.transform='scale(1.02)'; this.style.boxShadow='0 18px 35px rgba(0,0,0,0.2)';"
+            onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 12px 25px rgba(0,0,0,0.15)';">
+
+                <!-- Header: Initials Avatar + Username + Timestamp -->
+                <div class="thought-header" style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+                    <div style="
+                        width: 40px; height: 40px;
+                        border-radius: 50%;
+                        background: linear-gradient(135deg, #7b6cf6, #c9a3ff);
+                        display: flex; align-items: center; justify-content: center;
+                        font-weight: 700;
+                        color: white;
+                        font-family: 'Zalando Sans SemiExpanded', sans-serif;
+                        font-size: 1rem;
+                        text-transform: uppercase;
+                        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+                    ">
+                        {{ thought.user.username[0] }}
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; font-size: 0.95rem; color: #333; font-family: 'Zalando Sans SemiExpanded', sans-serif;">
+                            {{ thought.user.username }}
+                        </div>
+                        <div style="font-size: 0.8rem; color: #6c757d;">
+                            {{ thought.timestamp.strftime('%b %d, %Y • %H:%M') }}
+                        </div>
+                    </div>
                 </div>
-                <p class="thought-content mt-2">{{ thought.content }}</p>
-                {% if thought.user_id == current_user.id %}
-                    <form action="{{ url_for('delete_thought', id=thought.id) }}" method="POST" class="mt-3">
-                        <button type="submit" class="btn btn-danger btn-sm">
-                            Delete Thought
-                        </button>
-                    </form>
-                {% endif %}
+
+                <!-- Thought Content -->
+                <p class="thought-content" style="
+                    font-family: 'PT Serif', serif;
+                    font-size: 1.05rem;
+                    color: #212529;
+                    line-height: 1.6;
+                    margin-bottom: 1rem;
+                ">
+                    {{ thought.content }}
+                </p>
+
+                <!-- Footer: Reactions + Edit/Delete -->
+                <div class="thought-footer" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="reactions" style="display: flex; gap: 1rem; font-size: 0.9rem; color: #e63946; cursor: pointer;">
+                        <span class="heart-icon">❤️ {{ thought.likes or 0 }}</span>
+                    </div>
+
+                    {% if thought.user_id == current_user.id %}
+                        <div style="display:flex; gap:0.5rem;">
+                            <a href="{{ url_for('edit_thought', id=thought.id) }}" style="
+                                padding:0.35rem 0.7rem; font-size:0.85rem; font-weight:600; border-radius:8px; border:none;
+                                background:#4f46e5; color:white; text-decoration:none; cursor:pointer; transition: all 0.3s ease;"
+                                onmouseover="this.style.transform='translateY(-2px) scale(1.05)';" onmouseout="this.style.transform='none';">
+                                Edit
+                            </a>
+                            <form action="{{ url_for('delete_thought', id=thought.id) }}" method="POST">
+                                <button type="submit" style="
+                                    padding:0.35rem 0.7rem; font-size:0.85rem; font-weight:600; border-radius:8px; border:none;
+                                    background:#f87171; color:white; cursor:pointer; transition: all 0.3s ease;"
+                                    onmouseover="this.style.transform='translateY(-2px) scale(1.05)';" onmouseout="this.style.transform='none';">
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
         {% endfor %}
     {% else %}
         <div class="no-thoughts text-center mt-5">
-            <h3>No thoughts yet... 🌱</h3>
-            <p>Share your first thought to start building your soul nest!</p>
+            <h3 style="font-family: 'PT Serif', serif;">No thoughts yet... 🌱</h3>
+            <p style="color: #555;">Share your first thought to start building your soul nest!</p>
         </div>
     {% endif %}
 </div>
+
+<!-- Mood-Based Card Colors -->
+<style>
+    .mood-happy { background: rgba(255, 223, 186, 0.85); }      /* soft pastel orange */
+    .mood-calm { background: rgba(186, 225, 255, 0.85); }       /* soft pastel blue */
+    .mood-thoughtful { background: rgba(200, 186, 255, 0.85); } /* soft pastel purple */
+    .mood-sad { background: rgba(211, 211, 211, 0.85); }         /* soft grey */
+    .mood-excited { background: rgba(255, 180, 180, 0.85); }    /* soft pink */
+</style>
 {% endblock %}
+
 {% block scripts %}
 {{ super() }}
+<script>
+    // Placeholder for future like/unlike functionality
+</script>
 {% endblock %}

@@ -108,12 +108,15 @@ def thoughts():
 @login_required
 def new_thought():
     if request.method == 'POST':
-        content = request.form.get('content').strip()
+        content = request.form.get('content', '').strip()
+        mood = request.form.get('mood', 'thoughtful')  # Get mood from form
+
         if not content:
             flash("Thought cannot be empty.", "danger")
             return redirect(url_for('new_thought'))
         
-        new_thought = Thought(user_id=current_user.id, content=content)
+        # Create the Thought with mood
+        new_thought = Thought(user_id=current_user.id, content=content, mood=mood)
         db.session.add(new_thought)
         try:
             db.session.commit()
@@ -125,7 +128,9 @@ def new_thought():
             flash("Error saving thought. Please try again.", "danger")
             return redirect(url_for('new_thought'))
     
+    # GET request renders form
     return render_template('new_thought.html')
+
 
 # ---------- Delete Thought ----------
 @app.route('/thoughts/<int:id>/delete', methods=['POST'])
@@ -147,6 +152,37 @@ def delete_thought(id):
         flash("Error deleting thought. Please try again.", "danger")
     
     return redirect(url_for('thoughts'))
+
+@app.route('/thought/<int:id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_thought(id):
+    thought = Thought.query.get_or_404(id)
+
+    # Only owner can edit
+    if thought.user_id != current_user.id:
+        flash("You cannot edit someone else's thought.", "danger")
+        return redirect(url_for('thoughts'))
+
+    if request.method == 'POST':
+        content = request.form.get('content').strip()
+        mood = request.form.get('mood', 'thoughtful')
+        if not content:
+            flash("Thought cannot be empty.", "danger")
+            return redirect(url_for('edit_thought', id=id))
+
+        thought.content = content
+        thought.mood = mood
+        try:
+            db.session.commit()
+            flash("Thought updated successfully!", "success")
+            return redirect(url_for('thoughts'))
+        except Exception as e:
+            db.session.rollback()
+            flash("Error updating thought. Try again.", "danger")
+            return redirect(url_for('edit_thought', id=id))
+
+    # GET request -> render edit form
+    return render_template('edit_thought.html', thought=thought)
 
 @login_manager.unauthorized_handler
 def unauthorized():

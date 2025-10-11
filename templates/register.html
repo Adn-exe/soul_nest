@@ -1,30 +1,113 @@
 {% extends "base.html" %}
 {% block title %}Soul Nest - Register{% endblock %}
-{% block content %}
-<div class="form-box">
-    <h2>Register</h2>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-    <form method="POST">
-        <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="confirm_password">Confirm Password</label>
-            <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
-        </div>
-        <button type="submit" class="btn btn-primary mt-3">Register</button>
-    </form>
-</div>
-{% endblock %}
 
+{% block content %}
+<section class="register-section" style="
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+    padding: 2rem 1rem;
+">
+    <div class="form-box" data-aos="fade-up" style="
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(12px);
+        padding: 2.5rem 3rem;
+        border-radius: 15px;
+        box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+        max-width: 400px;
+        width: 100%;
+    ">
+        <h2 style="
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(90deg, #7b6cf6, #c9a3ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        " data-aos="fade-down">
+            Register
+        </h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label for="username" style="font-weight: 600; color: #333;">Username</label>
+                <input type="text" id="username" name="username" class="form-control" required style="
+                    width: 100%;
+                    padding: 0.75rem;
+                    border: 1px solid #ced4da;
+                    border-radius: 8px;
+                    font-size: 1rem;
+                    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+                ">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label for="password" style="font-weight: 600; color: #333;">Password</label>
+                <input type="password" id="password" name="password" class="form-control" required style="
+                    width: 100%;
+                    padding: 0.75rem;
+                    border: 1px solid #ced4da;
+                    border-radius: 8px;
+                    font-size: 1rem;
+                    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+                ">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label for="confirm_password" style="font-weight: 600; color: #333;">Confirm Password</label>
+                <input type="password" id="confirm_password" name="confirm_password" class="form-control" required style="
+                    width: 100%;
+                    padding: 0.75rem;
+                    border: 1px solid #ced4da;
+                    border-radius: 8px;
+                    font-size: 1rem;
+                    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+                ">
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-3" style="
+                width: 100%;
+                padding: 0.75rem;
+                background: linear-gradient(90deg, #7b6cf6, #c9a3ff);
+                border: none;
+                border-radius: 8px;
+                font-size: 1rem;
+                font-weight: 600;
+                color: white;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            " onmouseover="this.style.transform='translateY(-2px) scale(1.02)';" onmouseout="this.style.transform='none';">
+                Register
+            </button>
+        </form>
+    </div>
+</section>
+
+<style>
+/* Input focus effects */
+input:focus {
+    outline: none;
+    border-color: #7b6cf6;
+    box-shadow: 0 0 10px rgba(123,108,246,0.3);
+    transform: scale(1.01);
+}
+
+/* Alert spacing */
+.alert {
+    margin-bottom: 1rem;
+    border-radius: 10px;
+    text-align: center;
+}
+</style>
+{% endblock %}
