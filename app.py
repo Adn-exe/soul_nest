@@ -6,6 +6,7 @@ from sqlalchemy.orm import joinedload
 from models import db, User, Thought
 from flask_migrate import Migrate
 
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yourSuperSecretKey'  # Replace with a secure key in production
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
@@ -183,6 +184,19 @@ def edit_thought(id):
 
     # GET request -> render edit form
     return render_template('edit_thought.html', thought=thought)
+
+@app.route("/like/<int:id>", methods=["POST"])
+@login_required
+def like_thought(id):
+    thought = Thought.query.get_or_404(id)
+
+    if thought.is_liked_by(current_user):
+        thought.liked_by.remove(current_user)
+    else:
+        thought.liked_by.append(current_user)
+
+    db.session.commit()
+    return redirect(request.referrer or url_for('feed'))
 
 @login_manager.unauthorized_handler
 def unauthorized():

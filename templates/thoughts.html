@@ -48,12 +48,25 @@
                     {{ thought.content }}
                 </p>
 
+                <!-- Divider line -->
+                <div style="height:1px; background:#b0aeaec6; margin-bottom:0.75rem; width:100%;"></div>
+
                 <!-- Footer -->
                 <div class="thought-footer" style="display: flex; justify-content: space-between; align-items: center;">
-                    <div class="reactions" style="display: flex; gap: 1rem; font-size: 0.9rem; color: #e63946; cursor: pointer;">
-                        <span class="heart-icon">❤️ {{ thought.likes or 0 }}</span>
-                    </div>
 
+                    <!-- Likes on the left -->
+                    <form action="{{ url_for('like_thought', id=thought.id) }}" method="POST" style="display:flex; align-items:center; gap:0.5rem;">
+                        <button type="submit" class="heart-icon {% if thought.is_liked_by(current_user) %}liked{% endif %}" 
+                                style="background:none; border:none; cursor:pointer; display:flex; align-items:center; gap:0.2rem;">
+                            <!-- 2D heart SVG -->
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="{% if thought.is_liked_by(current_user) %}#e63946{% else %}#d3d3d3{% endif %}" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                            </svg>
+                        </button>
+                        <span style="font-weight:600;">{{ thought.like_count() }}</span>
+                    </form>
+
+                    <!-- Edit/Delete on the right -->
                     {% if thought.user_id == current_user.id %}
                         <div style="display:flex; gap:0.5rem;">
                             <a href="{{ url_for('edit_thought', id=thought.id) }}" style="
@@ -72,6 +85,7 @@
                             </form>
                         </div>
                     {% endif %}
+
                 </div>
             </div>
         {% endfor %}
@@ -83,52 +97,68 @@
     {% endif %}
 </div>
 
-<!-- Mood Reveal on Hover with Gradient and Pulsing -->
+<!-- Heart icon CSS -->
 <style>
-    /* Default neutral background */
-    .thought-card {
-        background: #fafafa;
-        transition: all 0.4s ease;
-    }
+    
+/* Heart colors and hover */
+.heart-icon svg {
+    fill: #d3d3d3;
+    width: 24px;
+    height: 24px;
+    display: block;
+    background: transparent;     /* ensures no white square */
+    border-radius: 50%;
+    transition: transform 0.2s ease, fill 0.2s ease; 
+    
+}
 
-    /* Pulse animation */
-    @keyframes pulseAura {
-        0% { box-shadow: 0 0 0 0 rgba(0,0,0,0); }
-        50% { box-shadow: 0 0 25px 5px rgba(255,255,255,0.2); }
-        100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); }
-    }
+.heart-icon.liked svg {
+    fill: #e63946;
+}
 
-    /* Hover with linear gradient + subtle pulse */
-    .mood-happy:hover {
-        background: linear-gradient(135deg, rgba(252,233,139,0.85), rgba(255,249,180,0.85));
-        animation: pulseAura 2s infinite;
-    }
-    .mood-calm:hover {
-        background: linear-gradient(135deg, rgba(162,246,170,0.85), rgba(200,255,200,0.85));
-        animation: pulseAura 2s infinite;
-    }
-    .mood-thoughtful:hover {
-        background: linear-gradient(135deg, rgba(189,200,179,0.9), rgba(210,220,200,0.9));
-        animation: pulseAura 2s infinite;
-    }
-    .mood-sad:hover {
-        background: linear-gradient(135deg, rgba(162,185,201,0.85), rgba(180,200,220,0.85));
-        animation: pulseAura 2s infinite;
-    }
-    .mood-excited:hover {
-        background: linear-gradient(135deg, rgba(248,190,136,0.85), rgba(255,210,160,0.85));
-        animation: pulseAura 2s infinite;
-    }
-    .mood-inspired:hover {
-        background: linear-gradient(135deg, rgba(196,248,254,0.85), rgba(180,240,255,0.85));
-        animation: pulseAura 2s infinite;
-    }
+/* Mood hover with gradient + pulse */
+.thought-card {
+    background: #fafafa;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.4s ease;
+}
+
+@keyframes pulseAura {
+    0% { box-shadow: 0 0 0 0 rgba(0,0,0,0); }
+    50% { box-shadow: 0 0 25px 5px rgba(255,255,255,0.2); }
+    100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); }
+}
+
+.mood-happy:hover {
+    background: linear-gradient(135deg, rgba(252,233,139,0.85), rgba(255,249,180,0.85));
+    animation: pulseAura 2s infinite;
+}
+.mood-calm:hover {
+    background: linear-gradient(135deg, rgba(162,246,170,0.85), rgba(200,255,200,0.85));
+    animation: pulseAura 2s infinite;
+}
+.mood-thoughtful:hover {
+    background: linear-gradient(135deg, rgba(189,200,179,0.9), rgba(210,220,200,0.9));
+    animation: pulseAura 2s infinite;
+}
+.mood-sad:hover {
+    background: linear-gradient(135deg, rgba(162,185,201,0.85), rgba(180,200,220,0.85));
+    animation: pulseAura 2s infinite;
+}
+.mood-excited:hover {
+    background: linear-gradient(135deg, rgba(248,190,136,0.85), rgba(255,210,160,0.85));
+    animation: pulseAura 2s infinite;
+}
+.mood-inspired:hover {
+    background: linear-gradient(135deg, rgba(196,248,254,0.85), rgba(180,240,255,0.85));
+    animation: pulseAura 2s infinite;
+}
 </style>
+
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
 <script>
-    // future like/unlike functionality
+    // Future AJAX like/unlike functionality can go here
 </script>
 {% endblock %}
