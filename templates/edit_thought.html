@@ -36,7 +36,6 @@
 
     <form method="POST">
         <div class="form-group" style="margin-bottom: 1.5rem; position: relative;">
-            <label for="content" style="font-weight: 600; color: #555; font-family: 'PT Serif', serif;">Your Thought</label>
             <textarea id="content" name="content" class="form-control" rows="5" required placeholder="Update your thought..." style="
                 width: 100%;
                 padding: 0.75rem;
@@ -48,23 +47,31 @@
             ">{{ thought.content }}</textarea>
         </div>
 
-        <div class="form-group" style="margin-bottom: 1.5rem;">
-            <label for="mood" style="font-weight: 600; color: #555; font-family: 'PT Serif', serif;">Mood</label>
-            <select id="mood" name="mood" class="form-control" style="
-                width: 100%;
-                padding: 0.5rem;
-                border-radius: 12px;
-                border: 1px solid #ced4da;
-                font-family: 'PT Serif', serif;
-                font-size: 1rem;
-            ">
-                <option value="thoughtful" {% if thought.mood == 'thoughtful' %}selected{% endif %}>Thoughtful</option>
-                <option value="happy" {% if thought.mood == 'happy' %}selected{% endif %}>Happy</option>
-                <option value="calm" {% if thought.mood == 'calm' %}selected{% endif %}>Calm</option>
-                <option value="sad" {% if thought.mood == 'sad' %}selected{% endif %}>Sad</option>
-                <option value="excited" {% if thought.mood == 'excited' %}selected{% endif %}>Excited</option>
-                <option value="inspired" {% if thought.mood == 'inspired' %}selected{% endif %}>Inspired</option>
-            </select>
+        <!-- Mood Selector -->
+        <div class="form-group" style="margin-bottom: 1.5rem; text-align:center;">
+            <label for="mood" style="
+                display: block;
+                font-weight: 600;
+                font-family: 'Playfair Display', serif;
+                font-size: 1.1rem;
+                text-align: center;
+                margin-bottom: 0.5rem;
+                background: linear-gradient(90deg, #7b6cf6, #c9a3ff);
+                -webkit-background-clip: text;
+                color: transparent;
+            ">Select Your Mood</label>
+
+            <div class="custom-select-wrapper">
+                <select id="mood" name="mood" class="form-control mood-placeholder" required>
+                    <option value="" disabled {% if not thought.mood %}selected{% endif %} hidden>&gt; Your Mood &lt;</option>
+                    <option value="thoughtful" {% if thought.mood == 'thoughtful' %}selected{% endif %}>Thoughtful</option>
+                    <option value="happy" {% if thought.mood == 'happy' %}selected{% endif %}>Happy</option>
+                    <option value="calm" {% if thought.mood == 'calm' %}selected{% endif %}>Calm</option>
+                    <option value="sad" {% if thought.mood == 'sad' %}selected{% endif %}>Sad</option>
+                    <option value="excited" {% if thought.mood == 'excited' %}selected{% endif %}>Excited</option>
+                    <option value="inspired" {% if thought.mood == 'inspired' %}selected{% endif %}>Inspired</option>
+                </select>
+            </div>
         </div>
 
         <button type="submit" class="btn btn-primary mt-3" style="
@@ -84,10 +91,76 @@
     </form>
 </div>
 
+<!-- Styles -->
 <style>
+/* Form box hover */
 .form-box:hover {
     transform: translateY(-4px) scale(1.01);
     box-shadow: 0 16px 30px rgba(0,0,0,0.25);
+}
+
+/* Custom mood selector wrapper */
+.custom-select-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+/* Style the select */
+select.form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    border: 1px solid #ced4da;
+    font-family: 'PT Serif', serif;
+    font-size: 1rem;
+    background: #f8f8f8;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    text-align: center;
+    color: #999; /* placeholder color */
+    font-style: italic;
+}
+
+/* Dropdown arrow */
+.custom-select-wrapper::after {
+    content: "▾";
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    font-size: 0.9rem;
+    color: #7b6cf6;
+}
+
+/* Hover & focus */
+select.form-control:hover {
+    border-color: #7b6cf6;
+    box-shadow: 0 6px 15px rgba(123,108,246,0.3);
+}
+select.form-control:focus {
+    outline: none;
+    border-color: #7b6cf6;
+    box-shadow: 0 0 12px rgba(123,108,246,0.4);
+    color: #212529; /* normal color after selection */
+    font-style: normal;
+}
+
+/* Reset placeholder after selection */
+select.form-control option:not(:first-child) {
+    color: #212529;
+    font-style: normal;
+}
+
+/* Smooth transition */
+select.form-control,
+select.form-control option {
+    transition: all 0.3s ease;
 }
 </style>
 {% endblock %}

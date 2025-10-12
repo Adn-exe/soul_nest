@@ -12,27 +12,25 @@
                 box-shadow: 0 12px 25px rgba(0,0,0,0.15);
                 transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.4s ease;
             "
-            onmouseover="this.style.transform='scale(1.02)'; this.style.boxShadow='0 18px 35px rgba(0,0,0,0.2)';"
+            onmouseover="this.style.transform='scale(1.03)'; this.style.boxShadow='0 18px 35px rgba(0,0,0,0.25)';"
             onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 12px 25px rgba(0,0,0,0.15)';">
 
-                <!-- Header: Initials Avatar + Username + Timestamp -->
+                <!-- Header -->
                 <div class="thought-header" style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
                     <div style="
                         width: 40px; height: 40px;
                         border-radius: 50%;
                         background: linear-gradient(135deg, #7b6cf6, #c9a3ff);
                         display: flex; align-items: center; justify-content: center;
-                        font-weight: 700;
-                        color: white;
+                        font-weight: 700; color: white;
                         font-family: 'Zalando Sans SemiExpanded', sans-serif;
-                        font-size: 1rem;
-                        text-transform: uppercase;
+                        font-size: 1rem; text-transform: uppercase;
                         box-shadow: 0 2px 6px rgba(0,0,0,0.2);
                     ">
                         {{ thought.user.username[0] }}
                     </div>
                     <div>
-                        <div style="font-weight: 600; font-size: 0.95rem; color: #333; font-family: 'Zalando Sans SemiExpanded', sans-serif;">
+                        <div style="font-weight: 600; font-size: 0.95rem; color: #333;">
                             {{ thought.user.username }}
                         </div>
                         <div style="font-size: 0.8rem; color: #6c757d;">
@@ -41,18 +39,16 @@
                     </div>
                 </div>
 
-                <!-- Thought Content -->
+                <!-- Content -->
                 <p class="thought-content" style="
                     font-family: 'PT Serif', serif;
-                    font-size: 1.05rem;
-                    color: #212529;
-                    line-height: 1.6;
-                    margin-bottom: 1rem;
+                    font-size: 1.05rem; color: #212529;
+                    line-height: 1.6; margin-bottom: 1rem;
                 ">
                     {{ thought.content }}
                 </p>
 
-                <!-- Footer: Reactions + Edit/Delete -->
+                <!-- Footer -->
                 <div class="thought-footer" style="display: flex; justify-content: space-between; align-items: center;">
                     <div class="reactions" style="display: flex; gap: 1rem; font-size: 0.9rem; color: #e63946; cursor: pointer;">
                         <span class="heart-icon">❤️ {{ thought.likes or 0 }}</span>
@@ -87,19 +83,52 @@
     {% endif %}
 </div>
 
-<!-- Mood-Based Card Colors -->
+<!-- Mood Reveal on Hover with Gradient and Pulsing -->
 <style>
-    .mood-happy { background: rgba(255, 223, 186, 0.85); }      /* soft pastel orange */
-    .mood-calm { background: rgba(186, 225, 255, 0.85); }       /* soft pastel blue */
-    .mood-thoughtful { background: rgba(200, 186, 255, 0.85); } /* soft pastel purple */
-    .mood-sad { background: rgba(211, 211, 211, 0.85); }         /* soft grey */
-    .mood-excited { background: rgba(255, 180, 180, 0.85); }    /* soft pink */
+    /* Default neutral background */
+    .thought-card {
+        background: #fafafa;
+        transition: all 0.4s ease;
+    }
+
+    /* Pulse animation */
+    @keyframes pulseAura {
+        0% { box-shadow: 0 0 0 0 rgba(0,0,0,0); }
+        50% { box-shadow: 0 0 25px 5px rgba(255,255,255,0.2); }
+        100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); }
+    }
+
+    /* Hover with linear gradient + subtle pulse */
+    .mood-happy:hover {
+        background: linear-gradient(135deg, rgba(252,233,139,0.85), rgba(255,249,180,0.85));
+        animation: pulseAura 2s infinite;
+    }
+    .mood-calm:hover {
+        background: linear-gradient(135deg, rgba(162,246,170,0.85), rgba(200,255,200,0.85));
+        animation: pulseAura 2s infinite;
+    }
+    .mood-thoughtful:hover {
+        background: linear-gradient(135deg, rgba(189,200,179,0.9), rgba(210,220,200,0.9));
+        animation: pulseAura 2s infinite;
+    }
+    .mood-sad:hover {
+        background: linear-gradient(135deg, rgba(162,185,201,0.85), rgba(180,200,220,0.85));
+        animation: pulseAura 2s infinite;
+    }
+    .mood-excited:hover {
+        background: linear-gradient(135deg, rgba(248,190,136,0.85), rgba(255,210,160,0.85));
+        animation: pulseAura 2s infinite;
+    }
+    .mood-inspired:hover {
+        background: linear-gradient(135deg, rgba(196,248,254,0.85), rgba(180,240,255,0.85));
+        animation: pulseAura 2s infinite;
+    }
 </style>
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
 <script>
-    // Placeholder for future like/unlike functionality
+    // future like/unlike functionality
 </script>
 {% endblock %}
