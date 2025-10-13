@@ -1,0 +1,84 @@
+{% macro render_thought_card(thought, current_user, editable=true) %}
+<div class="thought-card mood-{{ thought.mood }}" data-aos="fade-up" style="
+    padding: 1.8rem 2rem;
+    border-radius: 15px;
+    box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.4s ease;
+"
+onmouseover="this.style.transform='scale(1.03)'; this.style.boxShadow='0 18px 35px rgba(0,0,0,0.25)';"
+onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 12px 25px rgba(0,0,0,0.15)';">
+
+    <!-- Header (Avatar + Username + Timestamp) -->
+    <div class="thought-header" style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+        <div style="
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7b6cf6, #c9a3ff);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; color: white;
+            font-family: 'Zalando Sans SemiExpanded', sans-serif;
+            font-size: 1rem; text-transform: uppercase;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        ">
+            {{ thought.user.username[0] }}
+        </div>
+        <div>
+            <div style="font-weight: 600; font-size: 0.95rem; color: #333;">
+                {{ thought.user.username }}
+            </div>
+            <div style="font-size: 0.8rem; color: #6c757d;">
+                {{ thought.timestamp.strftime('%b %d, %Y • %H:%M') }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Thought Content -->
+    <p class="thought-content" style="
+        font-family: 'PT Serif', serif;
+        font-size: 1.15rem; color: #1c1c1c; font-weight: 500;
+        line-height: 1.6; margin-bottom: 0.5rem;
+    ">
+        {{ thought.content }}
+    </p>
+
+    <!-- Divider -->
+    <div style="height:1px; background:#b0aeaec6; margin-top:0.5rem; margin-bottom:0.5rem; width:100%;"></div>
+
+    <!-- Footer -->
+    <div class="thought-footer" style="display: flex; justify-content: space-between; align-items: center;">
+
+        <!-- Like Section -->
+        <div class="like-section" style="display:flex; align-items:center; gap:0.003rem;">
+            <button type="button" 
+                    class="heart-icon {% if thought.is_liked_by(current_user) %}liked{% endif %}" 
+                    data-id="{{ thought.id }}" 
+                    onclick="toggleLike(this)"
+                style="background:none; border:none; cursor:pointer; display:flex; align-items:center; gap:0.2rem;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="{% if thought.is_liked_by(current_user) %}#e63946{% else %}#d3d3d3{% endif %}" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+            </button>
+            <span id="like-count-{{ thought.id }}" style="font-weight:600;">{{ thought.like_count() }}</span>
+        </div>
+
+        {% if editable and thought.user_id == current_user.id %}
+        <div style="display:flex; gap:0.5rem;">
+            <a href="{{ url_for('edit_thought', id=thought.id) }}" style="
+                padding:0.35rem 0.7rem; font-size:0.85rem; font-weight:600; border-radius:8px; border:none;
+                background:#4f46e5; color:white; text-decoration:none; cursor:pointer; transition: all 0.3s ease;"
+                onmouseover="this.style.transform='translateY(-2px) scale(1.05)';" onmouseout="this.style.transform='none';">
+                Edit
+            </a>
+            <form action="{{ url_for('delete_thought', id=thought.id) }}" method="POST">
+                <button type="submit" style="
+                    padding:0.35rem 0.7rem; font-size:0.85rem; font-weight:600; border-radius:8px; border:none;
+                    background:#f87171; color:white; cursor:pointer; transition: all 0.3s ease;"
+                    onmouseover="this.style.transform='translateY(-2px) scale(1.05)';" onmouseout="this.style.transform='none';">
+                    Delete
+                </button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endmacro %}

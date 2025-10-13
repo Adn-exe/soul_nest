@@ -5,19 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <title>{% block title %}SOUL NEST{% endblock %}</title>
 
-    <!-- 🌿 Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 
-    <!-- 🌠 AOS for animations -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
     <style>
         :root {
-            --primary: #3182ce;    
+            --primary: #3182ce;     
             --primary-light: #e0f2fe; 
             --text-dark: #212529;   
             --text-muted: #6c757d; 
-            --bg: #f8f9fa;         
+            --bg: #f8f9fa;       
             --card-bg: #ffffff;    
             --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
@@ -66,7 +64,7 @@
             font-family: 'Playfair Display', serif;
             font-size: 2rem;
             letter-spacing: 1px;
-            background: linear-gradient(90deg, #3b82f6, #8b97c8);
+            background: linear-gradient(90deg, #3A75C7, #A2C4F0);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -84,7 +82,8 @@
             text-decoration: none;
             font-weight: 600;
             position: relative;
-            padding: 0.5rem 0; 
+            padding: 0.5rem 0.5rem; 
+            transition: all 0.3s ease;
         }
 
         .nav-links a::after {
@@ -101,6 +100,23 @@
         .nav-links a:hover::after {
             width: 100%;
         }
+        
+        /* 🚨 Custom style for Profile Link 🚨 */
+        .profile-link {
+            padding: 0.5rem 1rem !important; /* !important to override the .nav-links padding: 0.5rem 0 */
+            text-decoration: none;
+            color: var(--primary); 
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .profile-link:hover {
+            background: var(--primary) !important;
+            color: white !important;
+        }
+        /* End Custom Profile Style */
 
         .content {
             margin-top: 160px;
@@ -173,7 +189,11 @@
             </a>
             {% if current_user.is_authenticated %}
                 <a href="{{ url_for('new_thought') }}">New Thought</a>
+                
+                <a href="{{ url_for('user_profile', user_id=current_user.id) }}">My Profile</a>
+                
                 <a href="{{ url_for('logout') }}">Logout ({{ current_user.username }})</a>
+                
             {% else %}
                 <a href="{{ url_for('login') }}">Login</a>
                 <a href="{{ url_for('register') }}">Register</a>
@@ -192,7 +212,6 @@
         {% block content %}{% endblock %}
     </div>
 
-    <!-- 🌠 Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         AOS.init({

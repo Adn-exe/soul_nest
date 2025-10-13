@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from datetime import datetime
+from sqlalchemy import func 
 
 # ✅ Initialize SQLAlchemy here (NOT imported from app.py)
 db = SQLAlchemy()
@@ -21,6 +22,21 @@ class User(db.Model, UserMixin):
         'Thought', secondary='likes',
         back_populates='liked_by', lazy='dynamic'
     )
+    def total_likes_received(self):
+        total_likes=0
+
+        for thought in self.thoughts:
+            total_likes += len(thought.liked_by) # Use len() instead of thought.like_count()
+        return total_likes
+    
+    def get_milestones(self):
+        milestones = []
+        if len(self.thoughts) >= 10:
+            milestones.append("The Consistent Contributor (10+ Posts)")
+        
+        if self.total_likes_received() >= 50: 
+            milestones.append("The Beloved Listener (50+ Total Likes)")
+        return milestones
 
 class Thought(db.Model):
     id = db.Column(db.Integer, primary_key=True)

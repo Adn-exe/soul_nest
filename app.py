@@ -206,6 +206,37 @@ def like_thought(id):
         'likes': thought.like_count()
     })
 
+@app.route('/profile/<int:user_id>')
+@login_required
+def user_profile(user_id):
+    from models import Thought, User  # Ensure models are imported if necessary
+
+    user_to_view = User.query.get_or_404(user_id)
+    
+    # 🚨 FIX START: Use Python's sorted() function 🚨
+    # 1. user_to_view.thoughts is already the list of thoughts.
+    user_posts_list = user_to_view.thoughts 
+
+    # 2. Sort the list by the 'timestamp' attribute in descending order.
+    user_posts = sorted(
+        user_posts_list, 
+        key=lambda thought: thought.timestamp, 
+        reverse=True  # True for newest posts first (descending)
+    )
+    # 🚨 FIX END 🚨
+    
+    # Calculate stats using the methods you previously defined
+    total_likes = user_to_view.total_likes_received()
+    milestones = user_to_view.get_milestones()
+    
+    return render_template(
+        'profile.html', 
+        user=user_to_view, 
+        posts=user_posts,  # Pass the sorted list to the template
+        total_likes=total_likes, 
+        milestones=milestones
+    )
+
 @login_manager.unauthorized_handler
 def unauthorized():
     flash('Please login to access this page.', 'danger')

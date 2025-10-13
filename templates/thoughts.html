@@ -41,17 +41,17 @@
 
                 <p class="thought-content" style="
                     font-family: 'PT Serif', serif;
-                    font-size: 1.05rem; color: #212529;
-                    line-height: 1.6; margin-bottom: 1rem;
+                    font-size: 1.15rem; color: #1c1c1c; font-weight: 500;
+                    line-height: 1.6; margin-bottom: 0.5rem;
                 ">
                     {{ thought.content }}
                 </p>
 
-                <div style="height:1px; background:#b0aeaec6; margin-bottom:0.75rem; width:100%;"></div>
+                <div style="height:1px; background:#b0aeaec6; margin-top:0.5rem; margin-bottom:0.5rem; width:100%;"></div>
 
                 <div class="thought-footer" style="display: flex; justify-content: space-between; align-items: center;">
 
-                    <div class="like-section" style="display:flex; align-items:center; gap:0.5rem;">
+                    <div class="like-section" style="display:flex; align-items:center; gap:0.003rem;">
                         <button type="button" 
                                 class="heart-icon {% if thought.is_liked_by(current_user) %}liked{% endif %}" 
                                 data-id="{{ thought.id }}" 
