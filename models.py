@@ -33,12 +33,12 @@ class Thought(db.Model):
 
     liked_by = db.relationship(
         'User', secondary='likes',
-        back_populates='liked_thoughts', lazy='dynamic'
+        back_populates='liked_thoughts', lazy='select'
     )
 
     def is_liked_by(self, user):
-        return self.liked_by.filter(likes.c.user_id == user.id).count() > 0
+        return user in self.liked_by
 
     def like_count(self):
-        return self.liked_by.count()
+        return len(self.liked_by) 
 

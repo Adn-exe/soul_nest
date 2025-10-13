@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, current_app
+from flask import Flask, render_template, request, redirect, url_for, flash, current_app, jsonify
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
@@ -154,6 +154,7 @@ def delete_thought(id):
     
     return redirect(url_for('thoughts'))
 
+# ---------- Edit Thought ----------
 @app.route('/thought/<int:id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_thought(id):
@@ -185,18 +186,25 @@ def edit_thought(id):
     # GET request -> render edit form
     return render_template('edit_thought.html', thought=thought)
 
-@app.route("/like/<int:id>", methods=["POST"])
+# ---------- Like Thought ----------
+# This logic is fine IF thought.liked_by is a list/InstrumentedList (default/lazy='select')
+@app.route('/like/<int:id>', methods=['POST'])
 @login_required
 def like_thought(id):
     thought = Thought.query.get_or_404(id)
 
-    if thought.is_liked_by(current_user):
+    if current_user in thought.liked_by:  # This check now works against a list
         thought.liked_by.remove(current_user)
+        liked = False
     else:
         thought.liked_by.append(current_user)
+        liked = True
 
     db.session.commit()
-    return redirect(request.referrer or url_for('feed'))
+    return jsonify({
+        'liked': liked,
+        'likes': thought.like_count()
+    })
 
 @login_manager.unauthorized_handler
 def unauthorized():
