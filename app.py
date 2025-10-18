@@ -210,15 +210,9 @@ def like_thought(id):
 @app.route('/profile/<int:user_id>')
 @login_required
 def user_profile(user_id):
-    from models import Thought, User
 
     user_to_view = User.query.get_or_404(user_id)
-    user_posts = sorted(
-        user_to_view.thoughts,
-        key=lambda thought: thought.timestamp,
-        reverse=True
-    )
-
+    user_posts = sorted(user_to_view.thoughts, key=lambda t: t.timestamp, reverse=True)
     total_likes = user_to_view.total_likes_received()
     milestones = get_milestones(user_to_view)
 
@@ -227,8 +221,9 @@ def user_profile(user_id):
         user=user_to_view,
         posts=user_posts,
         total_likes=total_likes,
-        milestones=milestones,
+        milestones=milestones
     )
+
 
 
 @login_manager.unauthorized_handler

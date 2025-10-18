@@ -4,79 +4,82 @@
 
 {% block content %}
 <div class="profile-container" style="
-    max-width: 1000px; 
-    margin: 4rem auto 6rem; 
+    max-width: 1000px;
+    margin: 4rem auto 6rem;
     padding: 3rem 3rem 5rem;
-    background: linear-gradient(135deg, #f7f8fc 0%, #edf1f7 100%);
+    background: linear-gradient(160deg, #f8f9fb 0%, #eef1f6 100%);
     border-radius: 22px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.07);
 ">
 
     <!-- Profile Header -->
     <div class="profile-header-card" data-aos="fade-up" style="
-        text-align: center; 
-        padding: 3rem 2rem; 
-        border-radius: 20px; 
-        background: #ffffff; 
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08); 
+        text-align: center;
+        padding: 3rem 2rem;
+        border-radius: 20px;
+        background: #ffffff;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
         margin-bottom: 3rem;
+        transition: all 0.3s ease;
     ">
         {% if user.profile_image %}
             <img src="{{ user.profile_image }}" alt="{{ user.username }}" style="
-                width: 110px; height: 110px; 
+                width: 110px; height: 110px;
                 border-radius: 50%;
                 object-fit: cover;
-                box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+                box-shadow: 0 6px 14px rgba(79, 70, 229, 0.25);
                 margin-bottom: 1rem;
+                border: 3px solid #ecebff;
             ">
         {% else %}
             <div style="
-                width: 110px; height: 110px; 
-                border-radius: 50%; 
-                background: #e0e7ff; 
+                width: 110px; height: 110px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, #e0e7ff, #d0d8ff);
                 color: #4f46e5;
                 display: flex; align-items: center; justify-content: center;
                 font-size: 2rem; font-weight: 700;
                 margin: 0 auto 1rem;
+                box-shadow: 0 6px 12px rgba(0,0,0,0.1);
             ">
                 {{ user.username[0]|upper }}
             </div>
         {% endif %}
 
         <h1 style="
-            font-family: 'Playfair Display', serif; 
-            font-size: 2.7rem; 
-            color: #4f46e5;
-            margin-bottom: 0.4rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.6rem;
+            color: #3b3b98;
+            margin-bottom: 0.3rem;
         ">
-            {{ user.username }}'s Nest 🌿
+            {{ user.username }}’s Nest 🌿
         </h1>
     </div>
 
     <!-- Stats -->
     <div class="stats-bar" data-aos="fade-up" style="
-        display: flex; 
-        justify-content: space-around; 
-        padding: 1.5rem 0; 
-        margin-bottom: 2.5rem; 
-        border-radius: 12px;
-        background: rgba(255, 255, 255, 0.9);
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        display: flex;
+        justify-content: space-around;
+        padding: 1.5rem 0;
+        margin-bottom: 3rem;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #ffffff, #f3f4ff);
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.05);
     ">
         <div class="stat-item" style="text-align: center;">
-            <div style="font-size: 2.2rem; font-weight: 800; color: #4f46e5; line-height: 1.2;">
+            <div style="font-size: 2.3rem; font-weight: 800; color: #4f46e5; line-height: 1.2;">
                 {{ posts|length }}
             </div>
-            <div style="font-size: 0.9rem; color: #7b8794; font-weight: 500; margin-top: 0.25rem;">
+            <div style="font-size: 0.9rem; color: #6b7280; font-weight: 500; margin-top: 0.25rem;">
                 Thoughts Shared
             </div>
         </div>
 
         <div class="stat-item" style="text-align: center;">
-            <div style="font-size: 2.2rem; font-weight: 800; color: #e63946; line-height: 1.2;">
+            <div style="font-size: 2.3rem; font-weight: 800; color: #e63946; line-height: 1.2;">
                 {{ total_likes }}
             </div>
-            <div style="font-size: 0.9rem; color: #7b8794; font-weight: 500; margin-top: 0.25rem;">
+            <div style="font-size: 0.9rem; color: #6b7280; font-weight: 500; margin-top: 0.25rem;">
                 Likes Received ❤️
             </div>
         </div>
@@ -84,138 +87,173 @@
 
     <!-- Milestones -->
     <h2 data-aos="fade-up" style="
-        font-family: 'Inter', sans-serif; 
-        font-size: 1.5rem; 
+        font-family: 'Inter', sans-serif;
+        font-size: 1.8rem;
         font-weight: 700;
-        color: #1c1c1c;
-        border-bottom: 2px solid #ddd; 
-        padding-bottom: 0.5rem; 
-        margin-bottom: 1.5rem;
+        color: #2b2b2b;
+        text-align: center;
+        margin-bottom: 2rem;
+        position: relative;
     ">
         Milestones & Achievements 🏅
+        <span style="
+            display:block;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #7b6cf6, #c9a3ff);
+            margin: 0.5rem auto 0;
+            border-radius: 4px;
+        "></span>
     </h2>
 
+    <!-- Achieved Badges -->
     <div class="badges-grid" data-aos="fade-up" style="
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-        gap: 1.2rem; 
-        margin-bottom: 3.5rem;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
     ">
-        {% if milestones %}
-            {% for badge in milestones %}
-                {% set achieved = badge.achieved %}
-                {% set background_color = '#d4edda' if achieved else '#fff3cd' %}
-                {% set border_color = '#c3e6cb' if achieved else '#ffeeba' %}
-                {% set text_color = '#155724' if achieved else '#5d4037' %}
-                {% set icon_bg = '#a5d6a7' if achieved else '#f6c23e' %}
-                {% set progress_fill_color = '#4CAF50' if achieved else '#f6c23e' %}
-
-                <div class="badge-card" style="
-                    background: {{ background_color }};
-                    border: 1px solid {{ border_color }};
-                    border-radius: 14px;
-                    padding: 1rem;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 0.8rem;
-                    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-                    opacity: 1;
-                    transition: all 0.3s ease;
-                ">
-                    <div style="display:flex; align-items:center; gap: 0.75rem;">
-                        <span style="
-                            font-size: 1.5rem;
-                            padding: 0.5rem;
-                            background: {{ icon_bg }};
-                            border-radius: 8px;
-                            line-height: 1;
-                            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                        ">
-                            {{ badge.icon }}
-                        </span>
-                        <div style="font-weight:700; color:{{ text_color }}; flex-grow: 1;">
-                            {{ badge.name }} 
-                            {% if achieved %}
-                                <span style="font-size: 0.8rem; color: #4CAF50; margin-left: 0.5rem;">— Achieved</span>
-                            {% endif %}
-                        </div>
-                    </div>
-
-                    <div style="font-size: 0.85rem; color: {{ text_color }}; font-weight: 500; display:flex; justify-content: space-between;">
-                        <span>Progress</span>
-                        <span>{{ badge.progress }}</span>
-                    </div>
-
-                    <div style="
-                        height: 8px;
-                        background: rgba(0,0,0,0.1);
-                        border-radius: 8px;
-                        overflow: hidden;
-                    ">
-                        <div style="
-                            width: {{ badge.percentage }}%;
-                            height: 100%;
-                            background: {{ progress_fill_color }};
-                            transition: width 0.5s ease;
-                        "></div>
+        {% for badge in milestones if badge.achieved %}
+            <div class="badge-card" style="
+                background: linear-gradient(135deg, #e7f9ef, #c9f7d5);
+                border: 1px solid #b4ecc2;
+                border-radius: 16px;
+                padding: 1.2rem;
+                display: flex;
+                flex-direction: column;
+                gap: 0.8rem;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+                transition: all 0.3s ease;
+            ">
+                <div style="display:flex; align-items:center; gap:0.75rem;">
+                    <span style="font-size:1.6rem; padding:0.5rem; background:#4CAF50; border-radius:10px; color:white;">
+                        {{ badge.icon }}
+                    </span>
+                    <div style="font-weight:700; color:#155724; flex-grow:1;">
+                        {{ badge.name }}
+                        <span style="font-size:0.8rem; color:#4CAF50; margin-left:0.5rem;">✓ Achieved</span>
                     </div>
                 </div>
-            {% endfor %}
-        {% else %}
-            <p style="grid-column: 1 / -1; color: #7b8794; padding-left: 0.5rem; text-align: center;">
-                No milestones reached yet. Keep nurturing your nest!
-            </p>
-        {% endif %}
+                <div style="height:8px; background:rgba(0,0,0,0.1); border-radius:8px; overflow:hidden;">
+                    <div style="width:100%; height:100%; background:#4CAF50;"></div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Progress Button -->
+    {% if milestones|selectattr("achieved", "equalto", false)|list %}
+        <button id="show-progress-btn" style="
+            margin:1rem auto 0;
+            display:block;
+            padding:0.7rem 1.5rem;
+            border:none;
+            background: linear-gradient(90deg, #7b6cf6, #c9a3ff);
+            color:white;
+            border-radius:8px;
+            cursor:pointer;
+            font-weight:600;
+            font-size:0.95rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(123,108,246,0.3);
+        ">
+            Know Your Progress
+        </button>
+    {% endif %}
+
+    <!-- Hidden In-Progress Badges -->
+    <div id="progress-badges" style="display:none; margin-top:1.5rem; display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1.5rem;">
+        {% for badge in milestones if not badge.achieved %}
+            {% set numerator, denominator = badge.progress.split('/') %}
+            {% set percent = (numerator|int / denominator|int * 100) if denominator|int > 0 else 0 %}
+            <div class="badge-card" style="
+                background: linear-gradient(135deg, #fff7e1, #fff0c2);
+                border: 1px solid #ffe08a;
+                border-radius: 16px;
+                padding: 1.2rem;
+                display: flex;
+                flex-direction: column;
+                gap: 0.8rem;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            ">
+                <div style="display:flex; align-items:center; gap:0.75rem;">
+                    <span style="font-size:1.5rem; padding:0.5rem; background:#f6c23e; border-radius:8px;">
+                        {{ badge.icon }}
+                    </span>
+                    <div style="font-weight:700; color:#5d4037; flex-grow:1;">
+                        {{ badge.name }}
+                    </div>
+                </div>
+                <div style="height:8px; background:rgba(0,0,0,0.1); border-radius:8px; overflow:hidden;">
+                    <div style="width:{{ percent }}%; height:100%; background:#f6c23e; transition:width 0.5s;"></div>
+                </div>
+                <div style="font-size:0.85rem; color:#5d4037; font-weight:500; display:flex; justify-content:space-between; margin-top:0.2rem;">
+                    <span>Progress</span>
+                    <span>{{ badge.progress }}</span>
+                </div>
+            </div>
+        {% endfor %}
     </div>
 
     <!-- Recent Thoughts -->
     <h2 data-aos="fade-up" style="
-        font-family: 'Inter', sans-serif; 
-        font-size: 1.5rem; 
+        font-family: 'Inter', sans-serif;
+        font-size: 1.8rem;
         font-weight: 700;
-        color: #1c1c1c;
-        border-bottom: 2px solid #ddd; 
-        padding-bottom: 0.5rem; 
-        margin-bottom: 1.5rem;
+        color: #2b2b2b;
+        text-align: center;
+        margin-top: 3rem;
+        margin-bottom: 1.8rem;
     ">
-        Recent Thoughts
+        Recent Thoughts 
+        <span style="
+            display:block;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, #7b6cf6, #c9a3ff);
+            margin: 0.6rem auto 0;
+            border-radius: 4px;
+        "></span>
     </h2>
 
-    <div class="user-feed" data-aos="fade-up" style="
-        display: flex; 
-        flex-direction: column; 
-        gap: 1.5rem;
-    ">
+    <div class="user-feed" data-aos="fade-up" style="display:flex; flex-direction:column; gap:1.5rem;">
         {% if posts %}
             {% for post in posts %}
-                {{ render_thought_card(
-                    thought=post, 
-                    current_user=current_user, 
-                    editable=(user.id == current_user.id)
-                ) }}
+                {{ render_thought_card(thought=post, current_user=current_user, editable=(user.id == current_user.id)) }}
             {% endfor %}
         {% else %}
-            <p style="color: #7b8794; padding: 1rem; text-align: center; background: #fff; border-radius: 8px;">
+            <p style="color:#7b8794; padding:1rem; text-align:center; background:#fff; border-radius:8px;">
                 {{ user.username }} hasn't shared any thoughts yet.
             </p>
         {% endif %}
     </div>
 
-    <p style="
-        text-align:center;
-        color:#7b8794;
-        font-style:italic;
-        margin-top:3rem;
-        font-size:0.95rem;
-    ">
-        “Your nest grows with every thought you set free.”
+    <p style="text-align:center; color:#7b8794; font-style:italic; margin-top:3rem; font-size:0.95rem;">
+        “Your nest grows with every thought you set free.” 🕊️
     </p>
 </div>
 
+<script>
+document.getElementById('show-progress-btn')?.addEventListener('click', function() {
+    const progressDiv = document.getElementById('progress-badges');
+    if (progressDiv.style.display === 'none') {
+        progressDiv.style.display = 'grid';
+        this.textContent = "Hide Progress";
+    } else {
+        progressDiv.style.display = 'none';
+        this.textContent = "Know Your Progress";
+    }
+});
+</script>
+
 <style>
 .badge-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(123,108,246,0.4);
 }
 </style>
 {% endblock content %}
