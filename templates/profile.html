@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% block title %}Soul Nest - {{ user.username }}'s Nest{% endblock %}
-
 {% from 'macros.html' import render_thought_card %}
 
 {% block content %}
@@ -13,7 +12,7 @@
     box-shadow: 0 20px 40px rgba(0,0,0,0.06);
 ">
 
-    <!-- 🌿 Header Section -->
+    <!-- Profile Header -->
     <div class="profile-header-card" data-aos="fade-up" style="
         text-align: center; 
         padding: 3rem 2rem; 
@@ -22,7 +21,6 @@
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08); 
         margin-bottom: 3rem;
     ">
-
         {% if user.profile_image %}
             <img src="{{ user.profile_image }}" alt="{{ user.username }}" style="
                 width: 110px; height: 110px; 
@@ -55,7 +53,7 @@
         </h1>
     </div>
 
-    <!-- 📊 Stats -->
+    <!-- Stats -->
     <div class="stats-bar" data-aos="fade-up" style="
         display: flex; 
         justify-content: space-around; 
@@ -84,22 +82,7 @@
         </div>
     </div>
 
-    <!-- 🪶 Quote of the Nest -->
-    {% if featured_thought %}
-    <div data-aos="fade-up" style="
-        background: rgba(79,70,229,0.06);
-        border-left: 4px solid #4f46e5;
-        padding: 1.2rem 1.5rem;
-        border-radius: 12px;
-        font-style: italic;
-        color: #333;
-        margin-bottom: 2.5rem;
-    ">
-        “{{ featured_thought.content|truncate(120) }}”
-    </div>
-    {% endif %}
-
-    <!-- 🏅 Milestones -->
+    <!-- Milestones -->
     <h2 data-aos="fade-up" style="
         font-family: 'Inter', sans-serif; 
         font-size: 1.5rem; 
@@ -112,36 +95,80 @@
         Milestones & Achievements 🏅
     </h2>
 
-    <div class="badges-list" data-aos="fade-up" style="
-        display: flex; 
-        flex-wrap: wrap; 
-        gap: 1rem; 
+    <div class="badges-grid" data-aos="fade-up" style="
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+        gap: 1.2rem; 
         margin-bottom: 3.5rem;
     ">
         {% if milestones %}
             {% for badge in milestones %}
-                <span style="
-                    padding: 0.6rem 1.2rem;
-                    border-radius: 30px;
-                    background: #ffdb58;
-                    color: #5d4037;
-                    font-weight: 600;
-                    font-size: 0.9rem;
-                    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+                {% set achieved = badge.achieved %}
+                {% set background_color = '#d4edda' if achieved else '#fff3cd' %}
+                {% set border_color = '#c3e6cb' if achieved else '#ffeeba' %}
+                {% set text_color = '#155724' if achieved else '#5d4037' %}
+                {% set icon_bg = '#a5d6a7' if achieved else '#f6c23e' %}
+                {% set progress_fill_color = '#4CAF50' if achieved else '#f6c23e' %}
+
+                <div class="badge-card" style="
+                    background: {{ background_color }};
+                    border: 1px solid {{ border_color }};
+                    border-radius: 14px;
+                    padding: 1rem;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.8rem;
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+                    opacity: 1;
                     transition: all 0.3s ease;
-                " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 6px 12px rgba(0,0,0,0.15)';" 
-                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 3px 6px rgba(0,0,0,0.1)';">
-                    ✨ {{ badge }}
-                </span>
+                ">
+                    <div style="display:flex; align-items:center; gap: 0.75rem;">
+                        <span style="
+                            font-size: 1.5rem;
+                            padding: 0.5rem;
+                            background: {{ icon_bg }};
+                            border-radius: 8px;
+                            line-height: 1;
+                            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                        ">
+                            {{ badge.icon }}
+                        </span>
+                        <div style="font-weight:700; color:{{ text_color }}; flex-grow: 1;">
+                            {{ badge.name }} 
+                            {% if achieved %}
+                                <span style="font-size: 0.8rem; color: #4CAF50; margin-left: 0.5rem;">— Achieved</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div style="font-size: 0.85rem; color: {{ text_color }}; font-weight: 500; display:flex; justify-content: space-between;">
+                        <span>Progress</span>
+                        <span>{{ badge.progress }}</span>
+                    </div>
+
+                    <div style="
+                        height: 8px;
+                        background: rgba(0,0,0,0.1);
+                        border-radius: 8px;
+                        overflow: hidden;
+                    ">
+                        <div style="
+                            width: {{ badge.percentage }}%;
+                            height: 100%;
+                            background: {{ progress_fill_color }};
+                            transition: width 0.5s ease;
+                        "></div>
+                    </div>
+                </div>
             {% endfor %}
         {% else %}
-            <p style="color: #7b8794; padding-left: 0.5rem;">
+            <p style="grid-column: 1 / -1; color: #7b8794; padding-left: 0.5rem; text-align: center;">
                 No milestones reached yet. Keep nurturing your nest!
             </p>
         {% endif %}
     </div>
 
-    <!-- 🕊 Recent Thoughts -->
+    <!-- Recent Thoughts -->
     <h2 data-aos="fade-up" style="
         font-family: 'Inter', sans-serif; 
         font-size: 1.5rem; 
@@ -174,7 +201,6 @@
         {% endif %}
     </div>
 
-    <!-- ✨ Closing Line -->
     <p style="
         text-align:center;
         color:#7b8794;
@@ -184,6 +210,12 @@
     ">
         “Your nest grows with every thought you set free.”
     </p>
-
 </div>
+
+<style>
+.badge-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+</style>
 {% endblock content %}

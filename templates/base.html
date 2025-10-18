@@ -49,7 +49,7 @@ body {
 /* 🌙 Header */
 .header {
     background: rgba(255, 255, 255, 0.95);
-    padding: 1.5rem 1rem 2.0rem 1rem;
+    padding: 1.5rem 1rem 2rem 1rem;
     position: fixed;
     top: 0;
     width: 100%;
@@ -80,7 +80,7 @@ body {
 .nav-core {
     display: flex;
     justify-content: center;
-    gap: 3.5rem; /* spacing between icons */
+    gap: 3.5rem;
     margin-bottom: 1rem;
 }
 
@@ -111,7 +111,7 @@ body {
     white-space: nowrap;
 }
 
-/* User actions (Profile/Logout) */
+/* User actions (Logout/Login/Register) */
 .nav-user {
     position: absolute;
     top: 1rem;
@@ -131,10 +131,10 @@ body {
 }
 
 .content {
-    margin-top: 220px; /* enough space for taller header */
+    margin-top: 220px;
 }
 
-/* Cards and alerts */
+/* Cards */
 .thought-card {
     background: rgba(255, 255, 255, 0.85);
     padding: 1.5rem;
@@ -150,6 +150,7 @@ body {
     background: var(--primary-light);
 }
 
+/* Alerts */
 .alert {
     padding: 1rem;
     margin: 1rem 0;
@@ -169,6 +170,7 @@ body {
     border: 1px solid #c8e6c9;
 }
 
+/* Buttons */
 button {
     width: 100%;
     padding: 0.75rem;
@@ -184,6 +186,100 @@ button {
 button:hover {
     background-color: #0b5ed7;
 }
+
+/* Guest Navigation (underline + hover color) */
+.nav-guest {
+    display: flex;
+    justify-content: center;
+    gap: 2.5rem;
+    margin-top: 0.8rem;
+}
+
+.nav-guest a {
+    position: relative;
+    text-decoration: none;
+    color: var(--primary);
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: color 0.3s ease;
+}
+
+.nav-guest a:hover {
+    color: var(--text-dark);
+}
+
+.nav-guest a::after {
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: currentColor;
+    transition: width 0.35s ease;
+}
+
+.nav-guest a:hover::after {
+    width: 100%;
+}
+
+/* Glass-style logout confirmation */
+.logout-modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(5px);
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+.logout-box {
+    background: rgba(255,255,255,0.8);
+    border-radius: 16px;
+    padding: 2rem 2.5rem;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    text-align: center;
+    animation: fadeIn 0.3s ease;
+}
+.logout-box h2 {
+    color: var(--text-dark);
+    font-family: 'Playfair Display', serif;
+    margin-bottom: 1rem;
+}
+.logout-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1.2rem;
+}
+.logout-buttons button {
+    width: auto;
+    padding: 0.6rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.logout-buttons .yes {
+    background: var(--primary);
+    color: #fff;
+}
+.logout-buttons .no {
+    background: #ccc;
+    color: #333;
+}
+.logout-buttons .yes:hover {
+    background: #2563eb;
+}
+.logout-buttons .no:hover {
+    background: #b1b1b1;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 </style>
 </head>
 <body>
@@ -191,37 +287,35 @@ button:hover {
 <div class="header" data-aos="fade-down">
     <h1>SOUL NEST</h1>
 
-    <!-- Core navigation -->
-    <div class="nav-core">
-        <a href="{% if current_user.is_authenticated %}{{ url_for('thoughts') }}{% else %}{{ url_for('home') }}{% endif %}" data-title="{% if current_user.is_authenticated %}Feed{% else %}Home{% endif %}">
-            <i class="fa-regular fa-chart-bar"></i>
-        </a>
-        {% if current_user.is_authenticated %}
-        <a href="{{ url_for('new_thought') }}" data-title="New Thought">
-            <i class="fas fa-plus-circle"></i>
-        </a>
-        <a href="{{ url_for('user_profile', user_id=current_user.id) }}" data-title="Profile">
-            <i class="fas fa-user"></i>
-        {% endif %}
-    </div>
-
-    <!-- User actions -->
     {% if current_user.is_authenticated %}
-    <div class="nav-user">
-        <a href="{{ url_for('logout') }}" data-title="Logout">
-            <i class="fas fa-sign-out-alt"></i>
-        </a>
-    </div>
+        <div class="nav-core">
+            <a href="{{ url_for('thoughts') }}" data-title="Feed"><i class="fa-regular fa-chart-bar"></i></a>
+            <a href="{{ url_for('new_thought') }}" data-title="New Thought"><i class="fas fa-plus-circle"></i></a>
+            <a href="{{ url_for('user_profile', user_id=current_user.id) }}" data-title="Profile"><i class="fas fa-user"></i></a>
+        </div>
+
+        <div class="nav-user">
+            <a href="#" class="logout-trigger" data-title="Logout"><i class="fas fa-sign-out-alt"></i></a>
+        </div>
     {% else %}
-    <div class="nav-user">
-        <a href="{{ url_for('login') }}" title="Login">
-            <i class="fas fa-sign-in-alt"></i>
-        </a>
-        <a href="{{ url_for('register') }}" title="Register">
-            <i class="fas fa-user-plus"></i>
-        </a>
-    </div>
+        <div class="nav-guest">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('register') }}">Register</a>
+        </div>
     {% endif %}
+</div>
+
+<!-- Logout Confirmation Modal -->
+<div class="logout-modal" id="logoutModal">
+    <div class="logout-box">
+        <h2>Confirm Logout</h2>
+        <p>Are you sure you want to log out?</p>
+        <div class="logout-buttons">
+            <button class="yes" id="confirmLogout">Yes</button>
+            <button class="no" id="cancelLogout">Cancel</button>
+        </div>
+    </div>
 </div>
 
 <div class="content container" data-aos="fade-up">
@@ -235,9 +329,37 @@ button:hover {
     {% block content %}{% endblock %}
 </div>
 
+<!-- AOS -->
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
 AOS.init({ duration: 1000, once: true });
+
+// Logout confirmation logic
+document.addEventListener("DOMContentLoaded", () => {
+    const modal = document.getElementById("logoutModal");
+    const trigger = document.querySelector(".logout-trigger");
+    const confirmBtn = document.getElementById("confirmLogout");
+    const cancelBtn = document.getElementById("cancelLogout");
+
+    if (trigger) {
+        trigger.addEventListener("click", (e) => {
+            e.preventDefault();
+            modal.style.display = "flex";
+        });
+    }
+
+    confirmBtn.addEventListener("click", () => {
+        window.location.href = "{{ url_for('logout') }}";
+    });
+
+    cancelBtn.addEventListener("click", () => {
+        modal.style.display = "none";
+    });
+
+    modal.addEventListener("click", (e) => {
+        if (e.target === modal) modal.style.display = "none";
+    });
+});
 </script>
 
 </body>

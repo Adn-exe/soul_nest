@@ -5,6 +5,7 @@ from datetime import datetime
 from sqlalchemy.orm import joinedload
 from models import db, User, Thought
 from flask_migrate import Migrate
+from milestones import get_milestones
 
 
 app = Flask(__name__)
@@ -209,33 +210,26 @@ def like_thought(id):
 @app.route('/profile/<int:user_id>')
 @login_required
 def user_profile(user_id):
-    from models import Thought, User  # Ensure models are imported if necessary
+    from models import Thought, User
 
     user_to_view = User.query.get_or_404(user_id)
-    
-    # 🚨 FIX START: Use Python's sorted() function 🚨
-    # 1. user_to_view.thoughts is already the list of thoughts.
-    user_posts_list = user_to_view.thoughts 
-
-    # 2. Sort the list by the 'timestamp' attribute in descending order.
     user_posts = sorted(
-        user_posts_list, 
-        key=lambda thought: thought.timestamp, 
-        reverse=True  # True for newest posts first (descending)
+        user_to_view.thoughts,
+        key=lambda thought: thought.timestamp,
+        reverse=True
     )
-    # 🚨 FIX END 🚨
-    
-    # Calculate stats using the methods you previously defined
+
     total_likes = user_to_view.total_likes_received()
-    milestones = user_to_view.get_milestones()
-    
+    milestones = get_milestones(user_to_view)
+
     return render_template(
-        'profile.html', 
-        user=user_to_view, 
-        posts=user_posts,  # Pass the sorted list to the template
-        total_likes=total_likes, 
-        milestones=milestones
+        'profile.html',
+        user=user_to_view,
+        posts=user_posts,
+        total_likes=total_likes,
+        milestones=milestones,
     )
+
 
 @login_manager.unauthorized_handler
 def unauthorized():
