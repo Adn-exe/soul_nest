@@ -143,7 +143,7 @@
 
     <!-- Progress Button -->
     {% if milestones|selectattr("achieved", "equalto", false)|list %}
-        <button id="show-progress-btn" style="
+        <button id="show-progress-btn" class="progress-btn "style="
             margin:1rem auto 0;
             display:block;
             padding:0.7rem 1.5rem;
@@ -162,7 +162,7 @@
     {% endif %}
 
     <!-- Hidden In-Progress Badges -->
-    <div id="progress-badges" style="display:none; margin-top:1.5rem; display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1.5rem;">
+    <div id="progress-badges" style="display:none; margin-top:1.5rem; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1.5rem;">
         {% for badge in milestones if not badge.achieved %}
             {% set numerator, denominator = badge.progress.split('/') %}
             {% set percent = (numerator|int / denominator|int * 100) if denominator|int > 0 else 0 %}
@@ -244,6 +244,38 @@ document.getElementById('show-progress-btn')?.addEventListener('click', function
         this.textContent = "Know Your Progress";
     }
 });
+
+// FIX: Defining the function on the window object makes it globally accessible
+// to the inline 'onclick' handlers in the HTML above.
+window.toggleLike = async function(buttonElement) {
+    const thoughtId = buttonElement.dataset.id;
+    try {
+        const res = await fetch(`/like/${thoughtId}`, {
+            method: "POST",
+            credentials: "same-origin"
+        });
+        if (!res.ok) {
+            console.error("Server error during like toggle.");
+            return;
+        }
+        
+        const data = await res.json();
+        const svg = buttonElement.querySelector("svg");
+        const span = document.getElementById(`like-count-${thoughtId}`);
+        
+        // Update the heart visual and class
+        svg.setAttribute("fill", data.liked ? "#e63946" : "#d3d3d3");
+        buttonElement.classList.toggle('liked', data.liked); // Use the class for styling simplicity
+
+        // Update the like count number
+        if (span) {
+            span.textContent = data.likes;
+        }
+
+    } catch (err) {
+        console.error("Like failed (network/parsing):", err);
+    }
+};
 </script>
 
 <style>
@@ -251,9 +283,10 @@ document.getElementById('show-progress-btn')?.addEventListener('click', function
     transform: translateY(-4px);
     box-shadow: 0 8px 16px rgba(0,0,0,0.1);
 }
-button:hover {
+.progress-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 14px rgba(123,108,246,0.4);
 }
 </style>
 {% endblock content %}
+

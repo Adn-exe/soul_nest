@@ -49,29 +49,31 @@
 
         <!-- Mood Selector -->
         <div class="form-group" style="margin-bottom: 1.5rem; text-align:center;">
-            <label for="mood" style="
+            <label style="
                 display: block;
                 font-weight: 600;
                 font-family: 'Playfair Display', serif;
                 font-size: 1.1rem;
-                text-align: center;
-                margin-bottom: 0.5rem;
                 background: linear-gradient(90deg, #7b6cf6, #c9a3ff);
                 -webkit-background-clip: text;
                 color: transparent;
+                margin-bottom: 0.5rem;
             ">Select Your Mood</label>
-            
-            <div class="custom-select-wrapper">
-                <select id="mood" name="mood" class="form-control mood-placeholder" required>
-                    <option value="" disabled selected hidden>&gt; Your Mood &lt;</option>
-                    <option value="calm">Calm</option>
-                    <option value="happy">Happy</option>
-                    <option value="thoughtful">Thoughtful</option>
-                    <option value="inspired">Inspired</option>
-                    <option value="excited">Excited</option>
-                    <option value="sad">Sad</option>
-                </select>
-            </div>
+
+            <!-- Button that opens the modal -->
+            <button type="button" id="openMoodSelector" style="
+                padding: 0.6rem 1rem;
+                border-radius: 12px;
+                border: 1px solid #ced4da;
+                background: #f8f8f8;
+                font-family: 'PT Serif', serif;
+                font-size: 1rem;
+                color: #777;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            ">➤ Choose Mood</button>
+
+            <input type="hidden" id="mood" name="mood" required>
         </div>
 
         <button type="submit" class="btn btn-primary mt-3" style="
@@ -91,6 +93,47 @@
     </form>
 </div>
 
+<!-- Mood Modal -->
+<div id="moodModal" style="
+    display:none; 
+    position: fixed; 
+    top:50%; 
+    left:50%; 
+    transform: translate(-50%, -50%) scale(0.9); 
+    opacity:0; 
+    transition: all 0.35s ease; 
+    background: white; 
+    border-radius: 1rem; 
+    padding: 2rem 2.5rem; 
+    box-shadow: 0 12px 28px rgba(0,0,0,0.3); 
+    z-index:1000;
+">
+    <h3 style="
+        font-family: 'Playfair Display', serif; 
+        font-size: 1.5rem; 
+        margin-bottom: 1rem; 
+        background: linear-gradient(90deg, #7b6cf6, #c9a3ff); 
+        -webkit-background-clip: text; 
+        color: transparent;
+        text-align:center;
+    ">Select Your Mood</h3>
+
+    <div class="mood-grid" style="
+        display:grid; 
+        grid-template-columns:repeat(2,1fr); 
+        gap:1rem 1.2rem; 
+        justify-items:center; 
+        margin-top:1rem;
+    ">
+        <label class="mood-option"><input type="radio" name="moodOption" value="calm"><span>Calm</span></label>
+        <label class="mood-option"><input type="radio" name="moodOption" value="happy"><span>Happy</span></label>
+        <label class="mood-option"><input type="radio" name="moodOption" value="thoughtful"><span>Thoughtful</span></label>
+        <label class="mood-option"><input type="radio" name="moodOption" value="inspired"><span>Inspired</span></label>
+        <label class="mood-option"><input type="radio" name="moodOption" value="excited"><span>Excited</span></label>
+        <label class="mood-option"><input type="radio" name="moodOption" value="sad"><span>Sad</span></label>
+    </div>
+</div>
+
 <!-- Styles -->
 <style>
 /* Form box hover */
@@ -99,68 +142,73 @@
     box-shadow: 0 16px 30px rgba(0,0,0,0.25);
 }
 
-/* Custom mood selector wrapper */
-.custom-select-wrapper {
+/* Mood Buttons */
+.mood-option {
     position: relative;
-    display: inline-block;
-    width: 100%;
-}
-
-/* Style the select */
-select.form-control {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    border-radius: 12px;
-    border: 1px solid #ced4da;
-    font-family: 'PT Serif', serif;
-    font-size: 1rem;
-    background: #f8f8f8;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+    border-radius: 12px;
+    background: rgba(255,255,255,0.7);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    padding: 1rem 1.5rem;
+    width: 120px;
     transition: all 0.3s ease;
-    text-align: center;
-    color: #999; /* placeholder color */
-    font-style: italic;
+    font-family: 'PT Serif', serif;
 }
-
-/* Dropdown arrow */
-.custom-select-wrapper::after {
-    content: "▾";
-    position: absolute;
-    right: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-    font-size: 0.9rem;
-    color: #7b6cf6;
+.mood-option:hover { transform: scale(1.05); box-shadow: 0 6px 14px rgba(123,108,246,0.3); }
+.mood-option input { display:none; }
+.mood-option span { font-size:1rem; color:#555; transition: all 0.3s ease; text-align:center; }
+.mood-option input:checked + span {
+    background: linear-gradient(90deg, #7b6cf6, #c9a3ff);
+    -webkit-background-clip: text;
+    color: transparent;
+    font-weight: 600;
+    text-shadow: 0 0 6px rgba(123,108,246,0.5);
 }
-
-/* Hover & focus */
-select.form-control:hover {
-    border-color: #7b6cf6;
-    box-shadow: 0 6px 15px rgba(123,108,246,0.3);
-}
-select.form-control:focus {
-    outline: none;
-    border-color: #7b6cf6;
-    box-shadow: 0 0 12px rgba(123,108,246,0.4);
-    color: #212529; /* normal color after selection */
-    font-style: normal;
-}
-
-/* Reset placeholder after selection */
-select.form-control option:not(:first-child) {
-    color: #212529;
-    font-style: normal;
-}
-
-/* Smooth transition */
-select.form-control,
-select.form-control option {
-    transition: all 0.3s ease;
-}
+.close-btn:hover { transform: scale(1.05); }
 </style>
+
+<!-- Script -->
+<script>
+const moodModal = document.getElementById('moodModal');
+const openBtn = document.getElementById('openMoodSelector');
+
+openBtn.addEventListener('click', () => {
+    moodModal.style.display = 'block';
+    requestAnimationFrame(() => {
+        moodModal.style.opacity = '1';
+        moodModal.style.transform = 'translate(-50%, -50%) scale(1)';
+    });
+});
+
+// New: click on mood option
+document.querySelectorAll('.mood-option input').forEach(input => {
+    input.addEventListener('change', () => {
+        const selected = input.value;
+        document.getElementById('mood').value = selected;
+        const name = selected.charAt(0).toUpperCase() + selected.slice(1);
+        openBtn.textContent = "Mood: " + name;
+        openBtn.style.background = "linear-gradient(90deg, #7b6cf6, #c9a3ff)";
+        openBtn.style.color = "white";
+
+        // Close modal
+        moodModal.style.opacity = '0';
+        moodModal.style.transform = 'translate(-50%, -50%) scale(0.9)';
+        setTimeout(()=>{ moodModal.style.display='none'; }, 350);
+    });
+});
+
+// Close modal if clicked outside the card
+moodModal.addEventListener('click', (e) => {
+    if (e.target === moodModal) { // clicked directly on overlay
+        moodModal.style.opacity = '0';
+        moodModal.style.transform = 'translate(-50%, -50%) scale(0.9)';
+        setTimeout(()=>{ moodModal.style.display='none'; }, 350);
+    }
+});
+
+</script>
 {% endblock %}
