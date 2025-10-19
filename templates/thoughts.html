@@ -3,19 +3,18 @@
 
 {% block content %}
 <div class="feed-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
-
     {% if thoughts %}
         {% for thought in thoughts %}
-            <div class="thought-card mood-{{ thought.mood }}" data-aos="fade-up" style="
+            <div class="thought-card mood-{{ thought.mood }}" id="thought-{{ thought.id }}" data-aos="fade-up" style="
                 padding: 1.8rem 2rem;
                 border-radius: 15px;
-                /* Background is initially set by CSS in <style> block below */
                 box-shadow: 0 12px 25px rgba(0,0,0,0.15);
                 transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.4s ease;
             "
             onmouseover="this.style.transform='scale(1.03)'; this.style.boxShadow='0 18px 35px rgba(0,0,0,0.25)';"
             onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 12px 25px rgba(0,0,0,0.15)';">
 
+                <!-- Thought Header -->
                 <div class="thought-header" style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
                     <div style="
                         width: 40px; height: 40px;
@@ -39,6 +38,7 @@
                     </div>
                 </div>
 
+                <!-- Thought Content -->
                 <p class="thought-content" style="
                     font-family: 'PT Serif', serif;
                     font-size: 1.15rem; color: #1c1c1c; font-weight: 500;
@@ -49,8 +49,8 @@
 
                 <div style="height:1px; background:#b0aeaec6; margin-top:0.5rem; margin-bottom:0.5rem; width:100%;"></div>
 
+                <!-- Thought Footer: Likes, Edit/Delete, View Comments -->
                 <div class="thought-footer" style="display: flex; justify-content: space-between; align-items: center;">
-
                     <div class="like-section" style="display:flex; align-items:center; gap:0.003rem;">
                         <button type="button" 
                                 class="heart-icon {% if thought.is_liked_by(current_user) %}liked{% endif %}" 
@@ -64,26 +64,31 @@
                         <span id="like-count-{{ thought.id }}" style="font-weight:600;">{{ thought.like_count() }}</span>
                     </div>
 
+                    <div>
+                        <button class="view-comments-btn" data-thought-id="{{ thought.id }}" style="border:none; background:none; color:#4f46e5; cursor:pointer; font-size:0.85rem;">
+                            Comments ({{ thought.comments|length }})
+                        </button>
+                    </div>
+
                     {% if thought.user_id == current_user.id %}
                         <div style="display:flex; gap:0.5rem;">
-                            <a href="{{ url_for('edit_thought', id=thought.id) }}" style="
-                                padding:0.35rem 0.7rem; font-size:0.85rem; font-weight:600; border-radius:8px; border:none;
-                                background:#4f46e5; color:white; text-decoration:none; cursor:pointer; transition: all 0.3s ease;"
-                                onmouseover="this.style.transform='translateY(-2px) scale(1.05)';" onmouseout="this.style.transform='none';">
+                            <a href="{{ url_for('edit_thought', id=thought.id) }}" style="padding:0.35rem 0.7rem; font-size:0.85rem; font-weight:600; border-radius:8px; border:none; background:#4f46e5; color:white; text-decoration:none; cursor:pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px) scale(1.05)';" onmouseout="this.style.transform='none';">
                                 Edit
                             </a>
                             <form action="{{ url_for('delete_thought', id=thought.id) }}" method="POST">
-                                <button type="submit" style="
-                                    padding:0.35rem 0.7rem; font-size:0.85rem; font-weight:600; border-radius:8px; border:none;
-                                    background:#f87171; color:white; cursor:pointer; transition: all 0.3s ease;"
-                                    onmouseover="this.style.transform='translateY(-2px) scale(1.05)';" onmouseout="this.style.transform='none';">
+                                <button type="submit" style="padding:0.35rem 0.7rem; font-size:0.85rem; font-weight:600; border-radius:8px; border:none; background:#f87171; color:white; cursor:pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px) scale(1.05)';" onmouseout="this.style.transform='none';">
                                     Delete
                                 </button>
                             </form>
                         </div>
                     {% endif %}
-
                 </div>
+
+                <!-- Include Comment Section (hidden by default) -->
+                <div class="comments-wrapper" id="comments-wrapper-{{ thought.id }}" style="display:none;">
+                    {% include '_comments.html' %}
+                </div>
+
             </div>
         {% endfor %}
     {% else %}
@@ -95,93 +100,94 @@
 </div>
 
 <style>
-    
-/* Heart colors and hover */
-.heart-icon svg {
-    fill: #d3d3d3;
-    width: 24px;
-    height: 24px;
-    display: block;
-    background: transparent;
-    border-radius: 50%;
-    transition: transform 0.2s ease, fill 0.2s ease; 
-}
-/* IMPORTANT: The heart icon is styled using the 'liked' class on the BUTTON */
-.heart-icon.liked svg {
-    fill: #e63946;
-}
+/* Heart icon */
+.heart-icon svg { fill: #d3d3d3; width: 24px; height: 24px; display: block; background: transparent; border-radius: 50%; transition: transform 0.2s ease, fill 0.2s ease; }
+.heart-icon.liked svg { fill: #e63946; }
 
-/* Mood hover with gradient + pulse */
-.thought-card {
-    background: #fafafa;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.4s ease;
-}
-
-@keyframes pulseAura {
-    0% { box-shadow: 0 0 0 0 rgba(0,0,0,0); }
-    50% { box-shadow: 0 0 25px 5px rgba(255,255,255,0.2); }
-    100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); }
-}
-
-/* Your Mood Gradients */
-.mood-happy:hover {
-    background: linear-gradient(135deg, rgba(255, 180, 200, 0.9), rgba(255, 210, 150, 0.95));
-    animation: pulseAura 2s infinite;
-}
-.mood-calm:hover {
-    background: linear-gradient(135deg, rgba(170, 250, 180, 0.9), rgba(185, 245, 205, 0.9));
-    animation: pulseAura 2s infinite;
-}
-.mood-thoughtful:hover {
-    background: linear-gradient(135deg, rgba(200, 180, 250, 0.9), rgba(160, 200, 255, 0.95));
-    animation: pulseAura 2s infinite;
-}
-.mood-sad:hover {
-    background: linear-gradient(45deg, rgba(100, 125, 150, 0.9), rgba(180, 205, 230, 0.85));
-    animation: pulseAura 2s infinite;
-}
-.mood-excited:hover {
-    background: linear-gradient(135deg, rgba(255, 230, 150, 0.9), rgba(255, 185, 120, 0.95));
-    animation: pulseAura 2s infinite;
-}
-.mood-inspired:hover {
-    background: linear-gradient(135deg, rgba(160, 220, 255, 0.9), rgba(255, 240, 180, 0.95));
-    animation: pulseAura 2s infinite;
-}
+/* Mood hover gradients */
+.thought-card { background: #fafafa; transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.4s ease; }
+@keyframes pulseAura { 0% { box-shadow: 0 0 0 0 rgba(0,0,0,0); } 50% { box-shadow: 0 0 25px 5px rgba(255,255,255,0.2); } 100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); } }
+.mood-happy:hover { background: linear-gradient(135deg, rgba(255, 180, 200, 0.9), rgba(255, 210, 150, 0.95)); animation: pulseAura 2s infinite; }
+.mood-calm:hover { background: linear-gradient(135deg, rgba(170, 250, 180, 0.9), rgba(185, 245, 205, 0.9)); animation: pulseAura 2s infinite; }
+.mood-thoughtful:hover { background: linear-gradient(135deg, rgba(200, 180, 250, 0.9), rgba(160, 200, 255, 0.95)); animation: pulseAura 2s infinite; }
+.mood-sad:hover { background: linear-gradient(45deg, rgba(100, 125, 150, 0.9), rgba(180, 205, 230, 0.85)); animation: pulseAura 2s infinite; }
+.mood-excited:hover { background: linear-gradient(135deg, rgba(255, 230, 150, 0.9), rgba(255, 185, 120, 0.95)); animation: pulseAura 2s infinite; }
+.mood-inspired:hover { background: linear-gradient(135deg, rgba(160, 220, 255, 0.9), rgba(255, 240, 180, 0.95)); animation: pulseAura 2s infinite; }
 </style>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-// FIX: Defining the function on the window object makes it globally accessible
-// to the inline 'onclick' handlers in the HTML above.
+// Like button AJAX
 window.toggleLike = async function(buttonElement) {
     const thoughtId = buttonElement.dataset.id;
     try {
-        const res = await fetch(`/like/${thoughtId}`, {
-            method: "POST",
-            credentials: "same-origin"
-        });
-        if (!res.ok) {
-            console.error("Server error during like toggle.");
-            return;
-        }
-        
+        const res = await fetch(`/like/${thoughtId}`, { method: "POST", credentials: "same-origin" });
+        if (!res.ok) return console.error("Server error during like toggle.");
         const data = await res.json();
         const svg = buttonElement.querySelector("svg");
         const span = document.getElementById(`like-count-${thoughtId}`);
-        
-        // Update the heart visual and class
         svg.setAttribute("fill", data.liked ? "#e63946" : "#d3d3d3");
-        buttonElement.classList.toggle('liked', data.liked); // Use the class for styling simplicity
-
-        // Update the like count number
-        if (span) {
-            span.textContent = data.likes;
-        }
-
-    } catch (err) {
-        console.error("Like failed (network/parsing):", err);
-    }
+        buttonElement.classList.toggle('liked', data.liked);
+        if (span) span.textContent = data.likes;
+    } catch (err) { console.error("Like failed:", err); }
 };
-</script>
 
+$(document).ready(function() {
+    // Toggle view comments
+    $('.view-comments-btn').on('click', function() {
+        const thoughtId = $(this).data('thought-id');
+        const wrapper = $(`#comments-wrapper-${thoughtId}`);
+        wrapper.slideToggle();
+    });
+
+    // Comment form AJAX
+    $('.comment-form').on('submit', function(e) {
+        e.preventDefault();
+        const form = $(this);
+        const thoughtId = form.data('thought-id');
+        const content = form.find('input[name="content"]').val();
+
+        $.ajax({
+            url: '/comment/' + thoughtId,
+            method: 'POST',
+            data: { content: content },
+            success: function(response) {
+                const commentHtml = `
+                    <div class="comment-card" id="comment-${response.id}" style="display:flex; flex-direction:column; padding:0.6rem 1rem; border-radius:12px; background:#f9f9fb; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+                        <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom:0.25rem;">
+                            <strong style="font-weight:600; color:#1f2937;">${response.user}</strong>
+                            <div style="display:flex; align-items:center; gap:0.5rem;">
+                                <span style="font-size:0.7rem; color:#9ca3af;">Just now</span>
+                                <button class="delete-comment-btn" data-comment-id="${response.id}" style="border:none; background:none; color:#ef4444; cursor:pointer; font-size:0.75rem;">Delete</button>
+                            </div>
+                        </div>
+                        <p style="margin:0; color:#374151; font-size:0.95rem; line-height:1.4;">${response.content}</p>
+                    </div>`;
+                $('#comments-' + thoughtId).append(commentHtml);
+                form.find('input[name="content"]').val('');
+            },
+            error: function(xhr) {
+                alert(xhr.responseJSON.error || "Something went wrong.");
+            }
+        });
+    });
+
+    // Delete comment AJAX
+    $(document).on('click', '.delete-comment-btn', function() {
+        const btn = $(this);
+        const commentId = btn.data('comment-id');
+
+        $.ajax({
+            url: '/comment/delete/' + commentId,
+            method: 'POST',
+            success: function(response) {
+                $('#comment-' + commentId).remove();
+            },
+            error: function(xhr) {
+                alert(xhr.responseJSON.error || "Could not delete comment.");
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

@@ -2,8 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for, flash, cur
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
-from sqlalchemy.orm import joinedload
-from models import db, User, Thought
+from sqlalchemy.orm import selectinload
+from models import db, User, Thought,Comment
 from flask_migrate import Migrate
 from milestones import get_milestones
 
@@ -100,9 +100,8 @@ def logout():
 @login_required
 def thoughts():
     # Eager-load User (no 'likes' relationship now)
-    all_thoughts = Thought.query.options(
-        joinedload(Thought.user)
-    ).order_by(Thought.timestamp.desc()).all()
+    all_thoughts = Thought.query.options(selectinload(Thought.comments)) \
+                            .order_by(Thought.timestamp.desc()).all()
     return render_template('thoughts.html', thoughts=all_thoughts)
 
 # ---------- Add New Thought ----------
@@ -207,6 +206,24 @@ def like_thought(id):
         'likes': thought.like_count()
     })
 
+@app.route('/comment/<int:thought_id>', methods=['POST'])
+@login_required
+def add_comment(thought_id):
+    content = request.form.get('content')
+    if not content:
+        return jsonify({"error": "Comment cannot be empty."}), 400
+
+    comment = Comment(content=content, user_id=current_user.id, thought_id=thought_id)
+    db.session.add(comment)
+    db.session.commit()
+
+    return jsonify({
+        "id": comment.id,
+        "content": comment.content,
+        "user": comment.user.username,
+        "created_at": comment.created_at.strftime("%Y-%m-%d %H:%M")
+    })
+
 @app.route('/profile/<int:user_id>')
 @login_required
 def user_profile(user_id):
@@ -224,6 +241,15 @@ def user_profile(user_id):
         milestones=milestones
     )
 
+@app.route('/comment/delete/<int:comment_id>', methods=['POST'])
+@login_required
+def delete_comment(comment_id):
+    comment = Comment.query.get_or_404(comment_id)
+    if comment.user_id != current_user.id:
+        return jsonify({'error': 'Unauthorized'}), 403
+    db.session.delete(comment)
+    db.session.commit()
+    return jsonify({'success': True})
 
 
 @login_manager.unauthorized_handler

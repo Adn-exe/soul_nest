@@ -41,6 +41,7 @@ class Thought(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     mood = db.Column(db.String(50), nullable=True)
+    comments = db.relationship('Comment', backref='thought', lazy='select')
 
     # Relationships
     # Backref for 'thoughts' is now lazy=True (default) or lazy='select' 
@@ -58,3 +59,17 @@ class Thought(db.Model):
     def like_count(self):
         # Corrected to use dynamic count
         return self.liked_by.count()
+
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Relationships
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    thought_id = db.Column(db.Integer, db.ForeignKey('thought.id'), nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+    user = db.relationship('User', backref='comments')
+    
+
