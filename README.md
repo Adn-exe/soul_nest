@@ -33,7 +33,9 @@ It’s a safe corner of the internet where users can write freely, comment gentl
 git clone https://github.com/<your-username>/soul-nest.git
 cd soul-nest
 
-# 2️⃣ Activate virtual environment (Windows)
+
+### 2️⃣ Activate virtual environment (Windows)
+```bash
 venv\Scripts\activate
 
 #    or (macOS/Linux)
