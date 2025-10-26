@@ -32,3 +32,30 @@ It’s a safe corner of the internet where users can write freely, comment gentl
 ```bash
 git clone https://github.com/<your-username>/soul-nest.git
 cd soul-nest
+
+# 2️⃣ Activate virtual environment (Windows)
+venv\Scripts\activate
+
+#    or (macOS/Linux)
+source venv/bin/activate
+
+# 3️⃣ Install dependencies
+pip install -r requirements.txt
+
+# 4️⃣ Set environment variables (for Flask)
+# Windows PowerShell
+$env:FLASK_APP = "app.py"
+$env:FLASK_ENV = "development"
+
+# macOS/Linux
+export FLASK_APP=app.py
+export FLASK_ENV=development
+
+# 5️⃣ Initialize the database (if using SQLAlchemy)
+python
+>>> from app import db
+>>> db.create_all()
+>>> exit()
+
+# 6️⃣ Run the development server
+flask run
