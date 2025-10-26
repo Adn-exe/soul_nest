@@ -28,23 +28,23 @@ It’s a safe corner of the internet where users can write freely, comment gentl
 
 ## ⚙️ Installation & Setup
 
-### 1️⃣ Clone the repository
-```bash
+# 1️⃣ Clone the repository
 git clone https://github.com/<your-username>/soul-nest.git
 cd soul-nest
 
-
-### 2️⃣ Activate virtual environment (Windows)
-```bash
+# 2️⃣ Create and activate a virtual environment
+# Windows (PowerShell)
+python -m venv venv
 venv\Scripts\activate
 
-#    or (macOS/Linux)
+# macOS/Linux
+python3 -m venv venv
 source venv/bin/activate
 
-# 3️⃣ Install dependencies
+# 3️⃣ Install all required dependencies
 pip install -r requirements.txt
 
-# 4️⃣ Set environment variables (for Flask)
+# 4️⃣ Set Flask environment variables
 # Windows PowerShell
 $env:FLASK_APP = "app.py"
 $env:FLASK_ENV = "development"
@@ -61,3 +61,4 @@ python
 
 # 6️⃣ Run the development server
 flask run
+
