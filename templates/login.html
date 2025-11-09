@@ -5,30 +5,34 @@
 <section class="login-section" style="
     display: flex;
     justify-content: center;
-    align-items: center;
-    min-height: 70vh;
-    padding: 2rem 1rem;
+    align-items: flex-start;
+    min-height: 85vh;
 ">
     <div class="form-box" data-aos="fade-up" style="
         background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(12px);
-        padding: 2.5rem 3rem;
-        border-radius: 15px;
-        box-shadow: 0 12px 25px rgba(0,0,0,0.2);
-        max-width: 400px;
-        width: 100%;
-    ">
+        backdrop-filter: blur(14px);
+        padding: 3rem 3rem 2.5rem;
+        border-radius: 18px;
+        box-shadow: 0 18px 35px rgba(0,0,0,0.18);
+        max-width: 420px;
+        width: 95%;
+        position: relative;
+        top: -30px;
+        transition: transform 0.4s, box-shadow 0.4s;
+    " onmouseover="this.style.transform='translateY(-6px)'; this.style.boxShadow='0 25px 45px rgba(0,0,0,0.25)';"
+       onmouseout="this.style.transform='none'; this.style.boxShadow='0 18px 35px rgba(0,0,0,0.18)';">
+
         <h2 style="
             font-family: 'Playfair Display', serif;
-            font-size: 2rem;
+            font-size: 2.3rem;
             text-align: center;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(90deg, #7b6cf6, #c9a3ff);
+            margin-bottom: 2rem;
+            background: linear-gradient(90deg, #7b6cf6, #b892ff, #d4c2ff);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         " data-aos="fade-down">
-            Login
+            Welcome Back
         </h2>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -40,60 +44,79 @@
         {% endwith %}
 
         <form method="POST">
-            <div class="form-group" style="margin-bottom: 1.5rem;">
-                <label for="username" style="font-weight: 600; color: #333;">Username</label>
+            
+            <div class="form-group" style="margin-bottom: 1.4rem;">
+                <label for="username" style="font-weight: 600; color: #444;">Username</label>
                 <input type="text" id="username" name="username" class="form-control" required style="
                     width: 100%;
                     padding: 0.75rem;
-                    border: 1px solid #ced4da;
-                    border-radius: 8px;
+                    border: 1px solid #d4d1e5;
+                    border-radius: 10px;
                     font-size: 1rem;
-                    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+                    transition: 0.25s ease;
+                    background: rgba(255,255,255,0.6);
                 ">
             </div>
-            <div class="form-group" style="margin-bottom: 1.5rem;">
-                <label for="password" style="font-weight: 600; color: #333;">Password</label>
+            <div class="form-group" style="margin-bottom: 1.4rem;">
+                <label for="password" style="font-weight: 600; color: #444;">Password</label>
                 <input type="password" id="password" name="password" class="form-control" required style="
                     width: 100%;
                     padding: 0.75rem;
-                    border: 1px solid #ced4da;
-                    border-radius: 8px;
+                    border: 1px solid #d4d1e5;
+                    border-radius: 10px;
                     font-size: 1rem;
-                    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+                    transition: 0.25s ease;
+                    background: rgba(255,255,255,0.6);
                 ">
             </div>
+
             <button type="submit" class="btn btn-primary mt-3" style="
                 width: 100%;
-                padding: 0.75rem;
-                background: linear-gradient(90deg, #7b6cf6, #c9a3ff);
+                padding: 0.85rem;
+                background: linear-gradient(90deg, #7b6cf6, #caa7ff);
                 border: none;
-                border-radius: 8px;
-                font-size: 1rem;
+                border-radius: 10px;
+                font-size: 1.05rem;
                 font-weight: 600;
                 color: white;
                 cursor: pointer;
-                transition: all 0.3s ease;
-            " onmouseover="this.style.transform='translateY(-2px) scale(1.02)';" onmouseout="this.style.transform='none';">
+                letter-spacing: 0.3px;
+                transition: 0.3s ease;
+            " onmouseover="this.style.transform='scale(1.03)';" onmouseout="this.style.transform='none';">
                 Login
             </button>
         </form>
+
+        <p style="text-align:center; margin-top: 1.2rem; font-size: 0.95rem;">
+            Don't have an account? 
+            <a href="/register" style="color: #7b6cf6; font-weight: 600; text-decoration:none;">Create one</a>
+        </p>
     </div>
 </section>
 
 <style>
-/* Input focus effects */
 input:focus {
     outline: none;
-    border-color: #7b6cf6;
-    box-shadow: 0 0 10px rgba(123,108,246,0.3);
-    transform: scale(1.01);
+    border-color: #7b6cf6 !important;
+    box-shadow: 0 0 12px rgba(123,108,246,0.35) !important;
 }
 
-/* Alert spacing */
+/* Alert styling */
 .alert {
     margin-bottom: 1rem;
     border-radius: 10px;
     text-align: center;
+    padding: 0.7rem;
+    font-size: 0.95rem;
+}
+
+/* Smooth page animation */
+.login-section {
+    animation: fadePage 0.5s ease-out;
+}
+@keyframes fadePage {
+    from {opacity: 0;}
+    to {opacity: 1;}
 }
 </style>
 {% endblock %}

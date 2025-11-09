@@ -184,7 +184,7 @@ button {
 }
 
 button:hover {
-    background-color: #0b5ed7;
+    background-color: #f8f1f1;
 }
 
 /* Guest Navigation (underline + hover color) */
@@ -292,6 +292,8 @@ button:hover {
             <a href="{{ url_for('thoughts') }}" data-title="Feed"><i class="fa-regular fa-chart-bar"></i></a>
             <a href="{{ url_for('new_thought') }}" data-title="New Thought"><i class="fas fa-plus-circle"></i></a>
             <a href="{{ url_for('user_profile', user_id=current_user.id) }}" data-title="Profile"><i class="fas fa-user"></i></a>
+            <a href="/journal" data-title="Jounal"><i class="fa-solid fa-book"></i></a>
+
         </div>
 
         <div class="nav-user">
@@ -319,15 +321,20 @@ button:hover {
 </div>
 
 <div class="content container" data-aos="fade-up">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
     {% block content %}{% endblock %}
 </div>
+
+<!-- ✅ Toast container placed globally -->
+<div id="toast-container" style="
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 9999;
+"></div>
+
 
 <!-- AOS -->
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -361,6 +368,44 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 </script>
+
+<script>
+function showToast(message, category="info") {
+    const toast = document.createElement("div");
+    toast.textContent = message;
+    toast.style.cssText = `
+        padding: 12px 18px;
+        border-radius: 8px;
+        color: white;
+        font-weight: 500;
+        font-size: 14px;
+        animation: fadeInOut 3.2s ease forwards;
+        background: ${category === "success" ? "#4f46e5" :
+                     category === "danger"  ? "#e63946" :
+                     category === "warning" ? "#f59e0b" : "#374151"};
+        box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+    `;
+    (document.getElementById("toast-container") || document.body).appendChild(toast);
+    setTimeout(() => toast.remove(), 3200);
+}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      showToast("{{ message }}", "{{ category }}");
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+</script>
+
+<style>
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateX(20px); }
+  10% { opacity: 1; transform: translateX(0); }
+  90% { opacity: 1; transform: translateX(0); }
+  100% { opacity: 0; transform: translateX(20px); }
+}
+</style>
 
 </body>
 </html>

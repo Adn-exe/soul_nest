@@ -1,50 +1,105 @@
-<div class="comments" id="comments-{{ thought.id }}" style="display:flex; flex-direction:column; gap:0.6rem; margin-top:0.75rem;">
+<div class="comments" id="comments-{{ thought.id }}" style="display:flex; flex-direction:column; gap:0.9rem; margin-top:1rem;">
+
     {% for comment in thought.comments %}
-        <div class="comment-card" id="comment-{{ comment.id }}" style="
-            display:flex; flex-direction:column; 
-            padding:0.65rem 1rem; border-radius:14px; 
-            background:#f9f9fb; box-shadow:0 2px 8px rgba(0,0,0,0.06);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        " onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.06)';">
-            
-            <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom:0.25rem;">
-                <strong style="font-weight:600; color:#1f2937;">{{ comment.user.username }}</strong>
-                <div style="display:flex; align-items:center; gap:0.5rem;">
-                    <span style="font-size:0.7rem; color:#9ca3af;">
-                        {% if comment.timestamp %}
-                            {{ comment.timestamp.strftime('%b %d, %Y • %H:%M') }}
-                        {% else %}
-                            Just now
-                        {% endif %}
-                    </span>
-                    {% if comment.user_id == current_user.id %}
-                        <button class="delete-comment-btn" data-comment-id="{{ comment.id }}" style="
-                            border:none; background:none; color:#ef4444; cursor:pointer; font-size:0.75rem; 
-                            transition: color 0.2s ease;
-                        " onmouseover="this.style.color='#b91c1c';" onmouseout="this.style.color='#ef4444';">
-                            Delete
-                        </button>
-                    {% endif %}
-                </div>
+    <div class="comment-card" id="comment-{{ comment.id }}" style="
+        display:flex;
+        gap:0.75rem;
+        align-items:flex-start;
+        animation: fadeInUp 0.35s ease forwards;
+    ">
+        <!-- Avatar -->
+        <div style="
+            width:38px; height:38px;
+            border-radius:50%;
+            background: linear-gradient(135deg, #9b87f5, #c6b7ff);
+            display:flex; justify-content:center; align-items:center;
+            font-weight:700; color:white; font-size:0.9rem;
+            box-shadow:0 4px 10px rgba(0,0,0,0.15);
+        ">
+            {{ comment.user.username[0] }}
+        </div>
+
+        <!-- Text Bubble -->
+        <div style="
+            background:#ffffff;
+            border-radius:16px;
+            padding:0.75rem 1rem;
+            box-shadow:0 4px 14px rgba(0,0,0,0.08);
+            border:1px solid #ecebff;
+            flex-grow:1;
+            position:relative;
+            transform: translateY(0);
+            transition: 0.25s ease;
+        " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 18px rgba(0,0,0,0.12)';"
+          onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 14px rgba(0,0,0,0.08)';">
+
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong style="color:#4338ca; font-weight:600; font-size:0.9rem;">
+                    {{ comment.user.username }}
+                </strong>
+
+                <span style="font-size:0.7rem; color:#9ca3af;">
+                {% if comment.timestamp %}
+                    {{ comment.timestamp.strftime('%b %d, %Y') }}
+                {% else %}
+                    Just now
+                {% endif %}
+                </span>
             </div>
 
-            <p style="margin:0; color:#374151; font-size:0.95rem; line-height:1.5;">{{ comment.content }}</p>
+            <p style="margin:0.4rem 0 0; color:#2f2f2f; font-size:0.95rem; line-height:1.45;">
+                {{ comment.content }}
+            </p>
+
+            {% if comment.user_id == current_user.id %}
+            <button class="delete-comment-btn" data-comment-id="{{ comment.id }}" style="
+                position:absolute;
+                bottom:6px; right:10px;
+                border:none; background:none;
+                color:#ef4444; font-size:0.75rem;
+                cursor:pointer; opacity:0.75;
+                transition:0.2s ease;
+            " onmouseover="this.style.opacity='1';" onmouseout="this.style.opacity='0.75';">
+                Delete
+            </button>
+            {% endif %}
         </div>
+    </div>
     {% endfor %}
 
-    <!-- Comment Form -->
-    <form class="comment-form" data-thought-id="{{ thought.id }}" style="
-        display:flex; gap:0.5rem; margin-top:0.5rem;
-    ">
-        <input type="text" name="content" placeholder="Write a comment..." required style="
-            flex:1; border-radius:12px; border:1px solid #d1d5db; padding:0.55rem 0.85rem; 
-            font-size:0.9rem; outline:none; transition:border-color 0.2s ease;
-        " onfocus="this.style.borderColor='#4f46e5';" onblur="this.style.borderColor='#d1d5db';">
+    <!-- Comment Input -->
+    <form class="comment-form" data-thought-id="{{ thought.id }}" style="display:flex; gap:0.6rem; margin-top:0.4rem;">
+        <input type="text" name="content" placeholder="Share kindness..." required style="
+            flex:1;
+            border-radius:14px;
+            border:1px solid #d5d4ec;
+            padding:0.65rem 1rem;
+            font-size:0.9rem;
+            background:#ffffffb0;
+            backdrop-filter:blur(6px);
+            transition: 0.25s ease;
+        " onfocus="this.style.borderColor='#7c3aed';" onblur="this.style.borderColor='#d5d4ec';">
+
         <button type="submit" style="
-            border:none; background:#4f46e5; color:white; font-weight:600; border-radius:12px;
-            padding:0.55rem 1rem; cursor:pointer; transition: background 0.2s ease, transform 0.2s ease;
-        " onmouseover="this.style.background='#3730a3'; this.style.transform='translateY(-1px)';" onmouseout="this.style.background='#4f46e5'; this.style.transform='none';">
-            Post
+            border:none;
+            background:linear-gradient(135deg,#7c3aed,#a78bfa);
+            color:white;
+            padding:0.65rem 1.1rem;
+            border-radius:14px;
+            font-weight:600;
+            cursor:pointer;
+            transition:0.25s ease;
+        " onmouseover="this.style.transform='translateY(-2px) scale(1.03)';"
+          onmouseout="this.style.transform='none';">
+            Send
         </button>
     </form>
+
 </div>
+
+<style>
+@keyframes fadeInUp {
+    from { opacity:0; transform:translateY(6px); }
+    to { opacity:1; transform:translateY(0); }
+}
+</style>

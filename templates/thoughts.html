@@ -2,6 +2,29 @@
 {% block title %}Soul Nest - Feed{% endblock %}
 
 {% block content %}
+
+
+<!-- 🌙 Mood Filter Dropdown (Added) -->
+<form method="get" action="/thoughts" style="margin-bottom: 1.4rem;">
+    <select name="mood" onchange="this.form.submit()" style="
+        padding: 0.55rem 0.9rem; 
+        border-radius: 8px; 
+        border: 1px solid #bbb;
+        font-size: 0.9rem; 
+        background: white; cursor: pointer;">
+        
+        <option value="all" {% if selected_mood=='all' or not selected_mood %}selected{% endif %}>All Emotions</option>
+        <option value="happy" {% if selected_mood=='happy' %}selected{% endif %}>Happy</option>
+        <option value="sad" {% if selected_mood=='sad' %}selected{% endif %}>Sad</option>
+        <option value="anxious" {% if selected_mood=='anxious' %}selected{% endif %}>Anxious</option>
+        <option value="angry" {% if selected_mood=='angry' %}selected{% endif %}>Angry</option>
+        <option value="hopeful" {% if selected_mood=='hopeful' %}selected{% endif %}>Hopeful</option>
+        <option value="lost" {% if selected_mood=='lost' %}selected{% endif %}>Lost</option>
+        <option value="grateful" {% if selected_mood=='grateful' %}selected{% endif %}>Grateful</option>
+    </select>
+</form>
+
+
 <div class="feed-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
     {% if thoughts %}
         {% for thought in thoughts %}

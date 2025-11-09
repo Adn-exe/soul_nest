@@ -1,0 +1,21 @@
+name_list = [
+"Quriabamushie", "Maneleyaaa", "Stan", "Kyavivin", "Jeriashah", "Alajayayliaro",
+"Ceelinel", "Siseshodajar", "Mafahanisalla", "Kato", "Kolyamoz", "Sanfeylena",
+"Mazlajamalohe", "Agaylan", "Aneoh", "Hairtos", "Vidalarin", "Raari", "Malamevailaan",
+"Gyarminaya", "Kaanarita", "Anialieke", "Maioarton", "Atralele", "Ebedemisa", "Nala",
+"Keajefres", "Calannai", "Pelofta", "Eayaua", "Zemai", "Aselenann", "Brushelli",
+"Ansiana", "Kaiale", "Komara", "Meeanne", "Veemi", "Jonneleya", "Lililiocr",
+"Ppania", "Mjaa", "Jorharo", "Edastah", "Nnieriase", "Breza", "Safalyana", "Linzili",
+"Heaiarroe", "Visevicha", "Giewacovi", "Ddodyanar", "Amaiay", "Ason", "Eriarakis",
+"Meleoneid", "Mayeha", "Yaraeleor", "Keno", "Dedafa", "Lyaha", "Akaharase", "Aeorenen",
+"Nbeda", "Aronidexa", "Rarigri", "Yleman", "Alolan", "Ahaie", "Nnaynonya", "Kenenanni",
+"Chaanan", "Ananiri", "Rinee", "Kayelyale", "Edaneeya", "Myer", "Maryara", "Nastar",
+"Souroezor", "Ralanena", "Ciexlelli", "Kele", "Taide", "Payar", "Kealia", "Taldaysel",
+"Hairiariy", "Korora", "Asin", "Yanrellee", "Jonanan", "Ghase", "Naman", "Rileynema",
+"Gela", "Nkerianal", "Ckannilya", "Alinan", "Rrari", "Zaaemisar", "Jombe", "Leseel",
+"Kaka", "Kame", "Ssenaicko", "Venelen", "Ayneekear", "Silay", "Kjearmeyj", "Jaynaiar",
+"Ziaamadri", "Ajarlikan", "Agikhare", "Aylen", "Amennishi", "Rija", "Aronne", "Briyle",
+"Jrinlayna", "Kalan", "Zace", "Vize", "Ckennaa", "Jaha", "Clainelya", "Jamsesmai",
+"Avirrayna", "Aaaytonen", "Kotilde", "Favimayra", "Dierala", "Cellewhes", "Angin",
+"Aisawe", "Keesisyi", "Kriamei", "Taushiabe", "Kini", "Sseziawah"
+]

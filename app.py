@@ -1,12 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, current_app, jsonify
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime
+from datetime import datetime, timedelta
 from sqlalchemy.orm import selectinload
 from models import db, User, Thought,Comment
 from flask_migrate import Migrate
 from milestones import get_milestones
-
+from collections import Counter
+from phonoflow import name_list
+import random
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yourSuperSecretKey'  # Replace with a secure key in production
@@ -65,6 +67,13 @@ def register():
     
     return render_template('register.html')
 
+
+# ---------- Generate Name ----------
+@app.route('/generate-name')
+def generate_name():
+    return jsonify({"name": random.choice(name_list)})
+
+
 # ---------- Login ----------
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -87,6 +96,7 @@ def login():
     
     return render_template('login.html')
 
+
 # ---------- Logout ----------
 @app.route('/logout')
 @login_required
@@ -99,10 +109,50 @@ def logout():
 @app.route('/thoughts')
 @login_required
 def thoughts():
-    # Eager-load User (no 'likes' relationship now)
-    all_thoughts = Thought.query.options(selectinload(Thought.comments)) \
-                            .order_by(Thought.timestamp.desc()).all()
-    return render_template('thoughts.html', thoughts=all_thoughts)
+    mood_filter = request.args.get("mood")  # Get ?mood= from URL
+
+    query = Thought.query.options(selectinload(Thought.comments)) \
+                         .order_by(Thought.timestamp.desc())
+
+    if mood_filter and mood_filter != "all":
+        query = query.filter_by(mood=mood_filter)
+
+    all_thoughts = query.all()
+
+    return render_template('thoughts.html', thoughts=all_thoughts, selected_mood=mood_filter)
+
+# ---------- Emotional Reflection Journal ----------
+@app.route('/journal')
+@login_required
+def journal():
+    # All posts for this user (we’ll filter on the client without reloading)
+    user_posts = Thought.query.filter_by(user_id=current_user.id)\
+                              .order_by(Thought.timestamp.asc()).all()
+
+    # Counts for initial charts
+    mood_counts = Counter([p.mood for p in user_posts])
+
+    # JSON-safe posts for charts/timeline
+    posts_json = [
+        {
+            "content": p.content,
+            "mood": p.mood,
+            "timestamp": p.timestamp.strftime("%Y-%m-%d")  # ISO-like for JS Date()
+        }
+        for p in user_posts
+    ]
+
+    # Dominant thought post (most liked overall)
+    all_user_posts = Thought.query.filter_by(user_id=current_user.id).all()
+    most_liked = max(all_user_posts, key=lambda t: t.like_count(), default=None)
+
+    return render_template(
+        'journal.html',
+        posts=user_posts,          # truthy check for empty state
+        posts_json=posts_json,     # used by charts/timeline on client
+        mood_counts=mood_counts,   # initial pie
+        most_liked=most_liked      # for dominant thought card
+    )
 
 # ---------- Add New Thought ----------
 @app.route('/thoughts/new', methods=['GET', 'POST'])

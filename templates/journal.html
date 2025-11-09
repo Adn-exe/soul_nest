@@ -1,0 +1,285 @@
+{% extends "base.html" %}
+{% block title %}Your Emotional Reflection{% endblock %}
+
+{% block content %}
+<div style="max-width: 980px; margin: auto;">
+
+  <h2 style="font-family:'PT Serif', serif; font-size:2.2rem; margin-bottom:1.2rem; text-align:center;">
+      Your Emotional Journey 🌙
+  </h2>
+
+  {% if posts %}
+
+  <div style="display:flex; flex-direction:column; gap:2rem;">
+
+    <!-- ⭐ Dominant Thought Post (Most Liked) with Mood Glow + your feed card style -->
+    <div class="thought-card {% if most_liked %}mood-glow-{{ most_liked.mood }}{% endif %}" style="background:#fafafa;">
+      <h3 style="margin:0 0 0.5rem 0;">Most Appreciated Thought</h3>
+      {% if most_liked %}
+        <p style="font-family:'PT Serif', serif; font-size:1.15rem; margin-bottom:0.5rem;">
+          “{{ most_liked.content }}”
+        </p>
+        <div style="display:flex; gap:1rem; align-items:center; color:#4f46e5; font-weight:600;">
+          <span>❤️ {{ most_liked.like_count() }} likes</span>
+          <span>•</span>
+          <span>{{ most_liked.timestamp.strftime('%b %d, %Y') }}</span>
+        </div>
+      {% else %}
+        <p style="margin:0;">No likes yet — your words will find their people 🌱</p>
+      {% endif %}
+    </div>
+
+  <div style="display:flex; gap:0.6rem; justify-content:center; margin-top:1.6rem; margin-bottom:1.2rem;">
+    <button class="range-btn active" data-range="all">All Time</button>
+    <button class="range-btn" data-range="30d">Last 30 Days</button>
+    <button class="range-btn" data-range="7d">Last 7 Days</button>
+  </div>
+
+    <!-- 🍩 Emotion Frequency Pie -->
+    <div class="panel">
+      <h3 class="panel-title">How Often You Feel Each Emotion</h3>
+      <div style="height:240px;">
+        <canvas id="emotionChart"></canvas>
+      </div>
+    </div>
+
+    <!-- 📈 Trend Chart -->
+    <div class="panel">
+      <h3 class="panel-title">Mood Trend Over Time</h3>
+      <div style="height:320px;">
+        <canvas id="trendChart"></canvas>
+      </div>
+    </div>
+
+    <!-- 🧵 Mood Timeline Bar -->
+    <div class="panel">
+      <h3 class="panel-title">Timeline</h3>
+      <div id="timeline" class="timeline"></div>
+      <p class="muted">Hover the colored blocks to see the mood.</p>
+    </div>
+
+  </div>
+
+  {% else %}
+    <p style="color:#555; text-align:center;">You haven’t expressed anything yet... your journey begins when you're ready 🌱</p>
+  {% endif %}
+
+</div>
+
+<!-- Local styles for this page -->
+<style>
+/* If .thought-card is already in your global CSS, this augments it softly */
+.thought-card {
+  padding: 1.8rem 2rem;
+  border-radius: 15px;
+  background: #fafafa;
+  box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.thought-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 18px 35px rgba(0,0,0,0.25);
+}
+
+/* Panels for charts/timeline */
+.panel {
+  padding: 1.2rem 1.4rem;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.10);
+}
+.panel-title {
+  margin-bottom: 0.8rem;
+  font-weight: 700;
+}
+.muted { margin-top: 0.6rem; color:#6c6c6c; font-size:0.9rem; }
+
+/* Range buttons */
+.range-btn {
+  padding:0.45rem 0.9rem;
+  border-radius:10px;
+  border:1px solid #cfcfe6;
+  font-weight:600;
+  background:white;
+  color:#4f46e5;
+  cursor:pointer;
+  transition:0.25s;
+}
+.range-btn:hover { transform:scale(1.05); }
+.range-btn.active { background:#4f46e5; color:white; }
+
+/* Timeline */
+.timeline {
+  display:flex; gap:4px; align-items:center; overflow-x:auto; padding:6px 2px;
+}
+.timeline-chip {
+  width: 26px;
+  height: 14px;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  transition: transform .15s ease;
+}
+.timeline-chip:hover { transform: scale(1.25); }
+
+/* Mood Glow (Option B moods): happy, calm, thoughtful, sad, excited, inspired */
+.mood-glow-happy    { box-shadow: 0 10px 35px rgba(252,211,77,0.45), inset 0 0 0 2px rgba(252,211,77,0.6); }
+.mood-glow-calm     { box-shadow: 0 10px 35px rgba(187,247,208,0.45), inset 0 0 0 2px rgba(187,247,208,0.6); }
+.mood-glow-thoughtful{ box-shadow: 0 10px 35px rgba(199,210,254,0.45), inset 0 0 0 2px rgba(199,210,254,0.6); }
+.mood-glow-sad      { box-shadow: 0 10px 35px rgba(147,197,253,0.45), inset 0 0 0 2px rgba(147,197,253,0.6); }
+.mood-glow-excited  { box-shadow: 0 10px 35px rgba(253,186,116,0.45), inset 0 0 0 2px rgba(253,186,116,0.6); }
+.mood-glow-inspired { box-shadow: 0 10px 35px rgba(167,243,208,0.45), inset 0 0 0 2px rgba(167,243,208,0.6); }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+/* ---------- Data from server ---------- */
+const initialCounts = {{ mood_counts | tojson }};
+const allPosts = {{ posts_json | tojson }};
+
+/* ---------- Helpers ---------- */
+const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+
+/* Option B moods in your UI */
+const orderedMoods = ['happy','calm','thoughtful','sad','excited','inspired'];
+
+/* Consistent colors for Option B */
+const moodColors = {
+  happy:    '#fcd34d', // yellow
+  calm:     '#bbf7d0', // mint
+  thoughtful:'#c7d2fe', // indigo-100
+  sad:      '#93c5fd', // blue-300
+  excited:  '#fdba74', // orange-300
+  inspired: '#a7f3d0'  // green-200
+};
+
+/* ---------- Build Charts ---------- */
+let pieChart, trendChart;
+
+/* Create/Update charts for a given filtered set of posts */
+function updateCharts(filteredPosts) {
+  // Build counts from filtered posts
+  const counts = {};
+  orderedMoods.forEach(m => counts[m] = 0);
+  filteredPosts.forEach(p => {
+    if (counts.hasOwnProperty(p.mood)) counts[p.mood] += 1;
+  });
+
+  // Pie
+  const pieLabels = orderedMoods.map(cap);
+  const pieData   = orderedMoods.map(m => counts[m]);
+  const pieColors = orderedMoods.map(m => moodColors[m]);
+
+  if (!pieChart) {
+    const ctxPie = document.getElementById('emotionChart').getContext('2d');
+    pieChart = new Chart(ctxPie, {
+      type: 'doughnut',
+      data: {
+        labels: pieLabels,
+        datasets: [{ data: pieData, backgroundColor: pieColors, borderWidth: 0 }]
+      },
+      options: {
+        cutout: '58%',
+        maintainAspectRatio: false,
+        animation: { animateRotate: true, duration: 900, easing: 'easeOutQuart' },
+        plugins: {
+          legend: { position: 'bottom', labels: { padding: 14 } },
+          tooltip: { callbacks: { label: (ctx) => `${ctx.label}: ${ctx.formattedValue}` } }
+        }
+      }
+    });
+  } else {
+    pieChart.data.labels = pieLabels;
+    pieChart.data.datasets[0].data = pieData;
+    pieChart.data.datasets[0].backgroundColor = pieColors;
+    pieChart.update();
+  }
+
+  // Trend
+  const trendLabels = filteredPosts.map(p => p.timestamp);
+  const trendValues = filteredPosts.map(p => orderedMoods.indexOf(p.mood));
+  const pointColors = filteredPosts.map(p => moodColors[p.mood] || '#7c3aed');
+
+  if (!trendChart) {
+    const ctxTrend = document.getElementById('trendChart').getContext('2d');
+    trendChart = new Chart(ctxTrend, {
+      type: 'line',
+      data: {
+        labels: trendLabels,
+        datasets: [{
+          label: 'Emotional Trend',
+          data: trendValues,
+          borderColor: '#7c3aed',
+          borderWidth: 3,
+          pointRadius: 5,
+          pointHoverRadius: 7,
+          pointBackgroundColor: pointColors,
+          pointBorderWidth: 2,
+          fill: false,
+          tension: 0.35
+        }]
+      },
+      options: {
+        animation: { duration: 900, easing: 'easeOutQuart' },
+        plugins: { legend: { display: false } },
+        scales: {
+          y: {
+            ticks: { callback: (val) => cap(orderedMoods[val] || ''), color: '#555' },
+            grid: { display: false },
+            suggestedMin: 0,
+            suggestedMax: orderedMoods.length - 1
+          },
+          x: { grid: { display: false }, ticks: { color: '#555' } }
+        },
+        interaction: { intersect: false, mode: 'index' }
+      }
+    });
+  } else {
+    trendChart.data.labels = trendLabels;
+    trendChart.data.datasets[0].data = trendValues;
+    trendChart.data.datasets[0].pointBackgroundColor = pointColors;
+    trendChart.update();
+  }
+}
+
+/* ---------- Build Timeline ---------- */
+function updateTimeline(filteredPosts) {
+  const container = document.getElementById('timeline');
+  container.innerHTML = '';
+  filteredPosts.forEach(p => {
+    const chip = document.createElement('div');
+    chip.className = 'timeline-chip';
+    chip.style.background = (moodColors[p.mood] || '#e5e7eb');
+    chip.title = cap(p.mood); // mood only (no date)
+    container.appendChild(chip);
+  });
+}
+
+/* ---------- Client-Side Range Filtering ---------- */
+function filterByRange(range) {
+  const now = new Date();
+  let cutoff = null;
+
+  if (range === '7d')  cutoff = new Date(now.getTime() - 7  * 24 * 60 * 60 * 1000);
+  if (range === '30d') cutoff = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+  const filtered = cutoff
+    ? allPosts.filter(p => new Date(p.timestamp) >= cutoff)
+    : allPosts.slice();
+
+  updateCharts(filtered);
+  updateTimeline(filtered);
+
+  document.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.range-btn[data-range="${range}"]`).classList.add('active');
+}
+
+/* Initialize */
+filterByRange('all');
+
+/* Button events */
+document.querySelectorAll('.range-btn').forEach(btn => {
+  btn.addEventListener('click', () => filterByRange(btn.dataset.range));
+});
+</script>
+
+{% endblock %}

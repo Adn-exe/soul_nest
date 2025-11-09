@@ -190,7 +190,7 @@ document.querySelectorAll('.mood-option input').forEach(input => {
         const selected = input.value;
         document.getElementById('mood').value = selected;
         const name = selected.charAt(0).toUpperCase() + selected.slice(1);
-        openBtn.textContent = "Mood: " + name;
+        openBtn.textContent = name;
         openBtn.style.background = "linear-gradient(90deg, #7b6cf6, #c9a3ff)";
         openBtn.style.color = "white";
 
