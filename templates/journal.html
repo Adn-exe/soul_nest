@@ -2,132 +2,506 @@
 {% block title %}Your Emotional Reflection{% endblock %}
 
 {% block content %}
-<div style="max-width: 980px; margin: auto;">
+<div style="max-width: 1100px; margin: auto; padding: 2rem 1rem;">
 
-  <h2 style="font-family:'PT Serif', serif; font-size:2.2rem; margin-bottom:1.2rem; text-align:center;">
+  <!-- Hero Section with Stats -->
+  <div style="
+    text-align: center;
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 24px;
+    margin-bottom: 2.5rem;
+    box-shadow: 0 20px 50px rgba(102, 126, 234, 0.3);
+    position: relative;
+    overflow: hidden;
+  ">
+    <!-- Animated background circles -->
+    <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%; animation: float 6s ease-in-out infinite;"></div>
+    <div style="position: absolute; bottom: -30px; left: -30px; width: 150px; height: 150px; background: rgba(255,255,255,0.08); border-radius: 50%; animation: float 8s ease-in-out infinite reverse;"></div>
+    
+    <h2 style="
+      font-family: 'Playfair Display', serif;
+      color: #ffffff;
+      font-size: 2.8rem;
+      margin-bottom: 0.8rem;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      position: relative;
+      z-index: 1;
+    ">
       Your Emotional Journey 🌙
-  </h2>
+    </h2>
+    
+    <p style="color: rgba(255,255,255,0.9); font-size: 1.1rem; margin-bottom: 2rem; position: relative; z-index: 1;">
+      Discover patterns in your emotional landscape
+    </p>
+
+    <!-- Quick Stats -->
+    <div style="
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+      max-width: 700px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    ">
+      <div class="quick-stat" style="
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(10px);
+        padding: 1rem;
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.2);
+      ">
+        <div style="font-size: 2rem; font-weight: 800; color: white;" id="total-entries">{{ posts|length }}</div>
+        <div style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">Total Entries</div>
+      </div>
+      
+      <div class="quick-stat" style="
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(10px);
+        padding: 1rem;
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.2);
+      ">
+        <div style="font-size: 2rem; font-weight: 800; color: white;" id="dominant-mood">—</div>
+        <div style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">Dominant Mood</div>
+      </div>
+      
+      <div class="quick-stat" style="
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(10px);
+        padding: 1rem;
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.2);
+      ">
+        <div style="font-size: 2rem; font-weight: 800; color: white;" id="mood-diversity">0%</div>
+        <div style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">Mood Diversity</div>
+      </div>
+    </div>
+  </div>
 
   {% if posts %}
 
   <div style="display:flex; flex-direction:column; gap:2rem;">
 
-    <!-- ⭐ Dominant Thought Post (Most Liked) with Mood Glow + your feed card style -->
-    <div class="thought-card {% if most_liked %}mood-glow-{{ most_liked.mood }}{% endif %}" style="background:#fafafa;">
-      <h3 style="margin:0 0 0.5rem 0;">Most Appreciated Thought</h3>
+    <!-- Most Appreciated Thought -->
+    <div class="thought-card {% if most_liked %}mood-glow-{{ most_liked.mood }}{% endif %}" style="
+      background: #ffffff;
+      position: relative;
+      overflow: hidden;
+    ">
+      <div style="position: absolute; top: 10px; right: 10px; font-size: 2rem; opacity: 0.1;">⭐</div>
+      <h3 style="margin:0 0 0.8rem 0; display: flex; align-items: center; gap: 0.5rem;">
+        <span style="font-size: 1.5rem;">🏆</span>
+        Most Appreciated Thought
+      </h3>
       {% if most_liked %}
-        <p style="font-family:'PT Serif', serif; font-size:1.15rem; margin-bottom:0.5rem;">
-          “{{ most_liked.content }}”
+        <p style="font-family:'PT Serif', serif; font-size:1.2rem; margin-bottom:0.8rem; line-height: 1.6; color: #2d3748;">
+          "{{ most_liked.content }}"
         </p>
-        <div style="display:flex; gap:1rem; align-items:center; color:#4f46e5; font-weight:600;">
-          <span>❤️ {{ most_liked.like_count() }} likes</span>
-          <span>•</span>
-          <span>{{ most_liked.timestamp.strftime('%b %d, %Y') }}</span>
+        <div style="display:flex; gap:1.5rem; align-items:center; color:#4f46e5; font-weight:600; flex-wrap: wrap;">
+          <span style="display: flex; align-items: center; gap: 0.3rem;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="#e63946">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+            {{ most_liked.like_count() }} likes
+          </span>
+          <span style="color: #718096;">•</span>
+          <span style="display: flex; align-items: center; gap: 0.3rem;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            {{ most_liked.timestamp.strftime('%b %d, %Y') }}
+          </span>
+          <span style="
+            padding: 0.3rem 0.8rem;
+            background: linear-gradient(135deg, {{ moodColors[most_liked.mood] if most_liked.mood in moodColors else '#e5e7eb' }}, {{ moodColors[most_liked.mood] if most_liked.mood in moodColors else '#d1d5db' }});
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: #2d3748;
+          ">
+            {{ most_liked.mood|capitalize }}
+          </span>
         </div>
       {% else %}
-        <p style="margin:0;">No likes yet — your words will find their people 🌱</p>
+        <p style="margin:0; color: #718096;">No likes yet — your words will find their people 🌱</p>
       {% endif %}
     </div>
 
-  <div style="display:flex; gap:0.6rem; justify-content:center; margin-top:1.6rem; margin-bottom:1.2rem;">
-    <button class="range-btn active" data-range="all">All Time</button>
-    <button class="range-btn" data-range="30d">Last 30 Days</button>
-    <button class="range-btn" data-range="7d">Last 7 Days</button>
-  </div>
+    <!-- Time Range Filter with Icons -->
+    <div style="display:flex; gap:0.8rem; justify-content:center; flex-wrap: wrap; margin-top:0.5rem;">
+      <button class="range-btn active" data-range="all">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 0.3rem;">
+          <circle cx="12" cy="12" r="10"></circle>
+        </svg>
+        All Time
+      </button>
+      <button class="range-btn" data-range="30d">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 0.3rem;">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        Last 30 Days
+      </button>
+      <button class="range-btn" data-range="7d">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 0.3rem;">
+          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+        </svg>
+        Last 7 Days
+      </button>
+    </div>
 
-    <!-- 🍩 Emotion Frequency Pie -->
-    <div class="panel">
-      <h3 class="panel-title">How Often You Feel Each Emotion</h3>
-      <div style="height:240px;">
-        <canvas id="emotionChart"></canvas>
+    <!-- Two Column Layout for Charts -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 2rem;">
+      
+      <!-- Emotion Frequency Pie -->
+      <div class="panel" data-aos="fade-up">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <h3 class="panel-title">Emotion Distribution</h3>
+          <button id="download-pie" class="icon-btn" title="Download Chart">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+          </button>
+        </div>
+        <div style="height:280px; position: relative;">
+          <canvas id="emotionChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Mood Insights Card -->
+      <div class="panel insights-card" data-aos="fade-up" style="
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      ">
+        <div>
+          <h3 class="panel-title">🧠 Mood Insights</h3>
+          <div id="insights-content" style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
+            <!-- Dynamic insights will be populated here -->
+          </div>
+        </div>
+        <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 2px dashed #cbd5e0;">
+          <p style="font-size: 0.9rem; color: #718096; font-style: italic;">
+            💡 Tip: Regular reflection helps you understand your emotional patterns better.
+          </p>
+        </div>
       </div>
     </div>
 
-    <!-- 📈 Trend Chart -->
-    <div class="panel">
-      <h3 class="panel-title">Mood Trend Over Time</h3>
-      <div style="height:320px;">
+    <!-- Mood Trend Chart (Full Width) -->
+    <div class="panel" data-aos="fade-up">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3 class="panel-title">Mood Trend Over Time</h3>
+        <button id="download-trend" class="icon-btn" title="Download Chart">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+        </button>
+      </div>
+      <div style="height:350px;">
         <canvas id="trendChart"></canvas>
       </div>
     </div>
 
-    <!-- 🧵 Mood Timeline Bar -->
-    <div class="panel">
-      <h3 class="panel-title">Timeline</h3>
+    <!-- Interactive Timeline -->
+    <div class="panel" data-aos="fade-up">
+      <h3 class="panel-title">Interactive Timeline</h3>
+      <div style="
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding: 0.8rem;
+        background: #f7fafc;
+        border-radius: 8px;
+      ">
+        <div id="timeline-info" style="font-size: 0.9rem; color: #4a5568;">
+          Hover over blocks to see details
+        </div>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <span style="font-size: 0.85rem; color: #718096;">Zoom:</span>
+          <button class="zoom-btn" data-zoom="in" title="Zoom In">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              <line x1="11" y1="8" x2="11" y2="14"></line>
+              <line x1="8" y1="11" x2="14" y2="11"></line>
+            </svg>
+          </button>
+          <button class="zoom-btn" data-zoom="out" title="Zoom Out">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              <line x1="8" y1="11" x2="14" y2="11"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
       <div id="timeline" class="timeline"></div>
-      <p class="muted">Hover the colored blocks to see the mood.</p>
+    </div>
+
+    <!-- Mood Comparison Card -->
+    <div class="panel" data-aos="fade-up" style="background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);">
+      <h3 class="panel-title">📊 Mood Comparison</h3>
+      <div id="mood-comparison" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 1rem;">
+        <!-- Dynamic mood bars will be populated here -->
+      </div>
+    </div>
+
+    <!-- Emotional Streaks -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;" data-aos="fade-up">
+      <div class="panel" style="background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);">
+        <h3 class="panel-title">🔥 Longest Streak</h3>
+        <div id="longest-streak" style="font-size: 2.5rem; font-weight: 800; color: #0c4a6e; text-align: center; margin: 1rem 0;">
+          —
+        </div>
+        <p style="text-align: center; color: #0369a1; font-size: 0.9rem; margin: 0;">consecutive days with same mood</p>
+      </div>
+
+      <div class="panel" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);">
+        <h3 class="panel-title">⚡ Current Streak</h3>
+        <div id="current-streak" style="font-size: 2.5rem; font-weight: 800; color: #92400e; text-align: center; margin: 1rem 0;">
+          —
+        </div>
+        <p style="text-align: center; color: #b45309; font-size: 0.9rem; margin: 0;">days in a row sharing thoughts</p>
+      </div>
+
+      <div class="panel" style="background: linear-gradient(135deg, #ddd6fe 0%, #c4b5fd 100%);">
+        <h3 class="panel-title">🌈 Mood Variety</h3>
+        <div id="mood-variety" style="font-size: 2.5rem; font-weight: 800; color: #5b21b6; text-align: center; margin: 1rem 0;">
+          —
+        </div>
+        <p style="text-align: center; color: #7c3aed; font-size: 0.9rem; margin: 0;">different emotions expressed</p>
+      </div>
     </div>
 
   </div>
 
   {% else %}
-    <p style="color:#555; text-align:center;">You haven’t expressed anything yet... your journey begins when you're ready 🌱</p>
+    <div style="
+      text-align: center;
+      padding: 4rem 2rem;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    ">
+      <div style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.5;">🌱</div>
+      <p style="color:#718096; font-size: 1.2rem; margin-bottom: 0.5rem;">
+        Your emotional journey awaits
+      </p>
+      <p style="color:#a0aec0; font-size: 1rem;">
+        Start by sharing your first thought and watch your insights grow
+      </p>
+    </div>
   {% endif %}
 
 </div>
 
-<!-- Local styles for this page -->
+<!-- Enhanced Styles -->
 <style>
-/* If .thought-card is already in your global CSS, this augments it softly */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
+
+/* Thought Card */
 .thought-card {
-  padding: 1.8rem 2rem;
-  border-radius: 15px;
+  padding: 2rem 2.5rem;
+  border-radius: 18px;
   background: #fafafa;
-  box-shadow: 0 12px 25px rgba(0,0,0,0.15);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 12px 25px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
 }
 .thought-card:hover {
-  transform: scale(1.03);
-  box-shadow: 0 18px 35px rgba(0,0,0,0.25);
+  transform: translateY(-4px);
+  box-shadow: 0 18px 35px rgba(0,0,0,0.15);
 }
 
-/* Panels for charts/timeline */
+/* Panels */
 .panel {
-  padding: 1.2rem 1.4rem;
-  border-radius: 18px;
+  padding: 1.8rem 2rem;
+  border-radius: 20px;
   background: #ffffff;
-  box-shadow: 0 10px 28px rgba(0,0,0,0.10);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+}
+.panel:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.12);
 }
 .panel-title {
-  margin-bottom: 0.8rem;
+  margin: 0 0 1rem 0;
   font-weight: 700;
+  font-size: 1.3rem;
+  color: #2d3748;
 }
-.muted { margin-top: 0.6rem; color:#6c6c6c; font-size:0.9rem; }
 
-/* Range buttons */
+/* Range Buttons */
 .range-btn {
-  padding:0.45rem 0.9rem;
-  border-radius:10px;
-  border:1px solid #cfcfe6;
-  font-weight:600;
-  background:white;
-  color:#4f46e5;
-  cursor:pointer;
-  transition:0.25s;
+  padding: 0.6rem 1.2rem;
+  border-radius: 12px;
+  border: 2px solid #e2e8f0;
+  font-weight: 600;
+  background: white;
+  color: #4f46e5;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
 }
-.range-btn:hover { transform:scale(1.05); }
-.range-btn.active { background:#4f46e5; color:white; }
+.range-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+  border-color: #4f46e5;
+}
+.range-btn.active {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  color: white;
+  border-color: #4f46e5;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+/* Icon Buttons */
+.icon-btn, .zoom-btn {
+  padding: 0.5rem;
+  border: none;
+  background: #f7fafc;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.icon-btn:hover, .zoom-btn:hover {
+  background: #e2e8f0;
+  transform: scale(1.05);
+}
 
 /* Timeline */
 .timeline {
-  display:flex; gap:4px; align-items:center; overflow-x:auto; padding:6px 2px;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  overflow-x: auto;
+  padding: 8px 4px;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e0 #f7fafc;
 }
-.timeline-chip {
-  width: 26px;
-  height: 14px;
-  border-radius: 6px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
-  transition: transform .15s ease;
+.timeline::-webkit-scrollbar {
+  height: 8px;
 }
-.timeline-chip:hover { transform: scale(1.25); }
+.timeline::-webkit-scrollbar-track {
+  background: #f7fafc;
+  border-radius: 4px;
+}
+.timeline::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 4px;
+}
+.timeline::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
 
-/* Mood Glow (Option B moods): happy, calm, thoughtful, sad, excited, inspired */
-.mood-glow-happy    { box-shadow: 0 10px 35px rgba(252,211,77,0.45), inset 0 0 0 2px rgba(252,211,77,0.6); }
-.mood-glow-calm     { box-shadow: 0 10px 35px rgba(187,247,208,0.45), inset 0 0 0 2px rgba(187,247,208,0.6); }
-.mood-glow-thoughtful{ box-shadow: 0 10px 35px rgba(199,210,254,0.45), inset 0 0 0 2px rgba(199,210,254,0.6); }
-.mood-glow-sad      { box-shadow: 0 10px 35px rgba(147,197,253,0.45), inset 0 0 0 2px rgba(147,197,253,0.6); }
-.mood-glow-excited  { box-shadow: 0 10px 35px rgba(253,186,116,0.45), inset 0 0 0 2px rgba(253,186,116,0.6); }
+.timeline-chip {
+  min-width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  position: relative;
+}
+.timeline-chip:hover {
+  transform: scale(1.3);
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Mood Glows */
+.mood-glow-happy { box-shadow: 0 10px 35px rgba(252,211,77,0.45), inset 0 0 0 2px rgba(252,211,77,0.6); }
+.mood-glow-calm { box-shadow: 0 10px 35px rgba(187,247,208,0.45), inset 0 0 0 2px rgba(187,247,208,0.6); }
+.mood-glow-thoughtful { box-shadow: 0 10px 35px rgba(199,210,254,0.45), inset 0 0 0 2px rgba(199,210,254,0.6); }
+.mood-glow-sad { box-shadow: 0 10px 35px rgba(147,197,253,0.45), inset 0 0 0 2px rgba(147,197,253,0.6); }
+.mood-glow-excited { box-shadow: 0 10px 35px rgba(253,186,116,0.45), inset 0 0 0 2px rgba(253,186,116,0.6); }
 .mood-glow-inspired { box-shadow: 0 10px 35px rgba(167,243,208,0.45), inset 0 0 0 2px rgba(167,243,208,0.6); }
+
+/* Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.quick-stat {
+  animation: fadeInUp 0.6s ease backwards;
+}
+.quick-stat:nth-child(1) { animation-delay: 0.1s; }
+.quick-stat:nth-child(2) { animation-delay: 0.2s; }
+.quick-stat:nth-child(3) { animation-delay: 0.3s; }
+
+/* Mood Bar */
+.mood-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.8rem;
+  background: white;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+.mood-bar:hover {
+  transform: translateX(5px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.mood-bar-fill {
+  height: 24px;
+  border-radius: 6px;
+  transition: width 0.8s ease;
+  position: relative;
+  overflow: hidden;
+}
+.mood-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .panel {
+    padding: 1.2rem 1.5rem;
+  }
+  .thought-card {
+    padding: 1.5rem;
+  }
+}
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -139,34 +513,159 @@ const allPosts = {{ posts_json | tojson }};
 /* ---------- Helpers ---------- */
 const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
 
-/* Option B moods in your UI */
 const orderedMoods = ['happy','calm','thoughtful','sad','excited','inspired'];
 
-/* Consistent colors for Option B */
 const moodColors = {
-  happy:    '#fcd34d', // yellow
-  calm:     '#bbf7d0', // mint
-  thoughtful:'#c7d2fe', // indigo-100
-  sad:      '#93c5fd', // blue-300
-  excited:  '#fdba74', // orange-300
-  inspired: '#a7f3d0'  // green-200
+  happy: '#fcd34d',
+  calm: '#bbf7d0',
+  thoughtful: '#c7d2fe',
+  sad: '#93c5fd',
+  excited: '#fdba74',
+  inspired: '#a7f3d0'
 };
 
-/* ---------- Build Charts ---------- */
-let pieChart, trendChart;
+const moodEmojis = {
+  happy: '',
+  calm: '',
+  thoughtful: '',
+  sad: '',
+  excited: '',
+  inspired: ''
+};
 
-/* Create/Update charts for a given filtered set of posts */
+/* ---------- Chart Instances ---------- */
+let pieChart, trendChart;
+let timelineZoom = 1;
+
+/* ---------- Calculate Insights ---------- */
+function calculateInsights(posts) {
+  if (!posts.length) return;
+
+  const counts = {};
+  orderedMoods.forEach(m => counts[m] = 0);
+  posts.forEach(p => {
+    if (counts.hasOwnProperty(p.mood)) counts[p.mood] += 1;
+  });
+
+  // Dominant mood
+  const dominant = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+  document.getElementById('dominant-mood').textContent = cap(dominant[0]);
+
+  // Mood diversity (percentage of moods used)
+  const usedMoods = Object.values(counts).filter(c => c > 0).length;
+  const diversity = Math.round((usedMoods / orderedMoods.length) * 100);
+  document.getElementById('mood-diversity').textContent = diversity + '%';
+
+  // Insights content
+  const insightsHTML = `
+    <div style="padding: 1rem; background: white; border-radius: 10px; border-left: 4px solid ${moodColors[dominant[0]]};">
+      <div style="font-size: 1.8rem; margin-bottom: 0.5rem;">${moodEmojis[dominant[0]]}</div>
+      <p style="margin: 0; color: #2d3748; font-weight: 600;">You've been feeling mostly <strong>${cap(dominant[0])}</strong></p>
+      <p style="margin: 0.3rem 0 0 0; color: #718096; font-size: 0.9rem;">${dominant[1]} out of ${posts.length} entries</p>
+    </div>
+    <div style="padding: 1rem; background: white; border-radius: 10px;">
+      <p style="margin: 0; color: #2d3748; font-size: 0.95rem;">
+        <strong>📈 Trend:</strong> ${diversity > 70 ? 'You express a wide variety of emotions!' : diversity > 40 ? 'You have a balanced emotional range.' : 'Try exploring more of your emotional spectrum.'}
+      </p>
+    </div>
+  `;
+  document.getElementById('insights-content').innerHTML = insightsHTML;
+
+  // Mood comparison bars
+  const maxCount = Math.max(...Object.values(counts));
+  const comparisonHTML = Object.entries(counts)
+    .sort((a, b) => b[1] - a[1])
+    .map(([mood, count]) => {
+      const percentage = maxCount > 0 ? (count / maxCount) * 100 : 0;
+      return `
+        <div class="mood-bar">
+          <div style="font-size: 1.5rem; min-width: 30px; text-align: center;">${moodEmojis[mood]}</div>
+          <div style="flex: 1;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
+              <span style="font-size: 0.85rem; font-weight: 600; color: #4a5568;">${cap(mood)}</span>
+              <span style="font-size: 0.85rem; color: #718096;">${count}</span>
+            </div>
+            <div style="background: #e2e8f0; border-radius: 6px; overflow: hidden; height: 10px;">
+              <div class="mood-bar-fill" style="width: ${percentage}%; background: ${moodColors[mood]};"></div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  document.getElementById('mood-comparison').innerHTML = comparisonHTML;
+
+  // Calculate streaks
+  calculateStreaks(posts);
+}
+
+/* ---------- Calculate Streaks ---------- */
+function calculateStreaks(posts) {
+  if (!posts.length) return;
+
+  // Sort posts by date
+  const sortedPosts = [...posts].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+  // Longest mood streak
+  let longestStreak = 1;
+  let longestMood = sortedPosts[0].mood;
+  let currentStreak = 1;
+  let currentMood = sortedPosts[0].mood;
+
+  for (let i = 1; i < sortedPosts.length; i++) {
+    if (sortedPosts[i].mood === currentMood) {
+      currentStreak++;
+      if (currentStreak > longestStreak) {
+        longestStreak = currentStreak;
+        longestMood = currentMood;
+      }
+    } else {
+      currentStreak = 1;
+      currentMood = sortedPosts[i].mood;
+    }
+  }
+
+  document.getElementById('longest-streak').innerHTML = `
+    <span style="font-size: 1.2rem;">${moodEmojis[longestMood]}</span>
+    ${longestStreak}
+  `;
+
+  // Current posting streak (consecutive days)
+  let postingStreak = 1;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  for (let i = sortedPosts.length - 1; i > 0; i--) {
+    const date1 = new Date(sortedPosts[i].timestamp);
+    const date2 = new Date(sortedPosts[i - 1].timestamp);
+    date1.setHours(0, 0, 0, 0);
+    date2.setHours(0, 0, 0, 0);
+    
+    const diffDays = Math.round((date1 - date2) / (1000 * 60 * 60 * 24));
+    if (diffDays === 1) {
+      postingStreak++;
+    } else {
+      break;
+    }
+  }
+
+  document.getElementById('current-streak').textContent = postingStreak;
+
+  // Mood variety
+  const uniqueMoods = new Set(posts.map(p => p.mood)).size;
+  document.getElementById('mood-variety').textContent = uniqueMoods;
+}
+
+/* ---------- Build/Update Charts ---------- */
 function updateCharts(filteredPosts) {
-  // Build counts from filtered posts
   const counts = {};
   orderedMoods.forEach(m => counts[m] = 0);
   filteredPosts.forEach(p => {
     if (counts.hasOwnProperty(p.mood)) counts[p.mood] += 1;
   });
 
-  // Pie
-  const pieLabels = orderedMoods.map(cap);
-  const pieData   = orderedMoods.map(m => counts[m]);
+  // Pie Chart
+  const pieLabels = orderedMoods.map(m => `${moodEmojis[m]} ${cap(m)}`);
+  const pieData = orderedMoods.map(m => counts[m]);
   const pieColors = orderedMoods.map(m => moodColors[m]);
 
   if (!pieChart) {
@@ -175,15 +674,40 @@ function updateCharts(filteredPosts) {
       type: 'doughnut',
       data: {
         labels: pieLabels,
-        datasets: [{ data: pieData, backgroundColor: pieColors, borderWidth: 0 }]
+        datasets: [{
+          data: pieData,
+          backgroundColor: pieColors,
+          borderWidth: 3,
+          borderColor: '#fff',
+          hoverOffset: 8
+        }]
       },
       options: {
-        cutout: '58%',
+        cutout: '65%',
         maintainAspectRatio: false,
-        animation: { animateRotate: true, duration: 900, easing: 'easeOutQuart' },
+        animation: {
+          animateRotate: true,
+          duration: 1200,
+          easing: 'easeOutQuart'
+        },
         plugins: {
-          legend: { position: 'bottom', labels: { padding: 14 } },
-          tooltip: { callbacks: { label: (ctx) => `${ctx.label}: ${ctx.formattedValue}` } }
+          legend: {
+            position: 'bottom',
+            labels: {
+              padding: 16,
+              font: { size: 13, weight: '600' },
+              usePointStyle: true,
+              pointStyle: 'circle'
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            padding: 12,
+            cornerRadius: 8,
+            callbacks: {
+              label: (ctx) => `${ctx.label}: ${ctx.formattedValue} (${Math.round((ctx.parsed / filteredPosts.length) * 100)}%)`
+            }
+          }
         }
       }
     });
@@ -194,8 +718,11 @@ function updateCharts(filteredPosts) {
     pieChart.update();
   }
 
-  // Trend
-  const trendLabels = filteredPosts.map(p => p.timestamp);
+  // Trend Chart
+  const trendLabels = filteredPosts.map(p => {
+    const date = new Date(p.timestamp);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  });
   const trendValues = filteredPosts.map(p => orderedMoods.indexOf(p.mood));
   const pointColors = filteredPosts.map(p => moodColors[p.mood] || '#7c3aed');
 
@@ -210,25 +737,54 @@ function updateCharts(filteredPosts) {
           data: trendValues,
           borderColor: '#7c3aed',
           borderWidth: 3,
-          pointRadius: 5,
-          pointHoverRadius: 7,
+          pointRadius: 6,
+          pointHoverRadius: 9,
           pointBackgroundColor: pointColors,
-          pointBorderWidth: 2,
+          pointBorderColor: '#fff',
+          pointBorderWidth: 3,
           fill: false,
-          tension: 0.35
+          tension: 0.4
         }]
       },
       options: {
-        animation: { duration: 900, easing: 'easeOutQuart' },
-        plugins: { legend: { display: false } },
+        maintainAspectRatio: false,
+        animation: {
+          duration: 1200,
+          easing: 'easeOutQuart'
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            padding: 12,
+            cornerRadius: 8,
+            callbacks: {
+              title: (ctx) => trendLabels[ctx[0].dataIndex],
+              label: (ctx) => {
+                const mood = orderedMoods[ctx.parsed.y];
+                return `${moodEmojis[mood]} ${cap(mood)}`;
+              }
+            }
+          }
+        },
         scales: {
           y: {
-            ticks: { callback: (val) => cap(orderedMoods[val] || ''), color: '#555' },
-            grid: { display: false },
+            ticks: {
+              callback: (val) => {
+                const mood = orderedMoods[val];
+                return mood ? `${moodEmojis[mood]} ${cap(mood)}` : '';
+              },
+              color: '#4a5568',
+              font: { size: 12, weight: '600' }
+            },
+            grid: { color: '#e2e8f0' },
             suggestedMin: 0,
             suggestedMax: orderedMoods.length - 1
           },
-          x: { grid: { display: false }, ticks: { color: '#555' } }
+          x: {
+            grid: { display: false },
+            ticks: { color: '#4a5568', font: { size: 11 } }
+          }
         },
         interaction: { intersect: false, mode: 'index' }
       }
@@ -239,46 +795,119 @@ function updateCharts(filteredPosts) {
     trendChart.data.datasets[0].pointBackgroundColor = pointColors;
     trendChart.update();
   }
+
+  // Update insights
+  calculateInsights(filteredPosts);
 }
 
 /* ---------- Build Timeline ---------- */
 function updateTimeline(filteredPosts) {
   const container = document.getElementById('timeline');
   container.innerHTML = '';
-  filteredPosts.forEach(p => {
+  
+  const chipWidth = 32 * timelineZoom;
+  
+  filteredPosts.forEach((p, idx) => {
     const chip = document.createElement('div');
     chip.className = 'timeline-chip';
-    chip.style.background = (moodColors[p.mood] || '#e5e7eb');
-    chip.title = cap(p.mood); // mood only (no date)
+    chip.style.minWidth = chipWidth + 'px';
+    chip.style.width = chipWidth + 'px';
+    chip.style.background = moodColors[p.mood] || '#e5e7eb';
+    
+    const date = new Date(p.timestamp);
+    const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    chip.title = `${moodEmojis[p.mood]} ${cap(p.mood)} - ${formattedDate}`;
+    
+    chip.addEventListener('mouseenter', function() {
+      document.getElementById('timeline-info').innerHTML = `
+        <strong>${moodEmojis[p.mood]} ${cap(p.mood)}</strong> - ${formattedDate}
+      `;
+    });
+    
+    chip.addEventListener('mouseleave', function() {
+      document.getElementById('timeline-info').textContent = 'Hover over blocks to see details';
+    });
+    
     container.appendChild(chip);
   });
 }
 
+/* ---------- Timeline Zoom ---------- */
+document.querySelectorAll('.zoom-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const zoom = this.dataset.zoom;
+    if (zoom === 'in' && timelineZoom < 2) {
+      timelineZoom += 0.2;
+    } else if (zoom === 'out' && timelineZoom > 0.5) {
+      timelineZoom -= 0.2;
+    }
+    updateTimeline(currentFilteredPosts);
+  });
+});
+
+/* ---------- Download Charts ---------- */
+document.getElementById('download-pie')?.addEventListener('click', function() {
+  const url = pieChart.toBase64Image();
+  const link = document.createElement('a');
+  link.download = 'emotion-distribution.png';
+  link.href = url;
+  link.click();
+});
+
+document.getElementById('download-trend')?.addEventListener('click', function() {
+  const url = trendChart.toBase64Image();
+  const link = document.createElement('a');
+  link.download = 'mood-trend.png';
+  link.href = url;
+  link.click();
+});
+
 /* ---------- Client-Side Range Filtering ---------- */
+let currentFilteredPosts = [];
+
 function filterByRange(range) {
   const now = new Date();
   let cutoff = null;
 
-  if (range === '7d')  cutoff = new Date(now.getTime() - 7  * 24 * 60 * 60 * 1000);
+  if (range === '7d') cutoff = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
   if (range === '30d') cutoff = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
-  const filtered = cutoff
+  currentFilteredPosts = cutoff
     ? allPosts.filter(p => new Date(p.timestamp) >= cutoff)
     : allPosts.slice();
 
-  updateCharts(filtered);
-  updateTimeline(filtered);
+  updateCharts(currentFilteredPosts);
+  updateTimeline(currentFilteredPosts);
 
   document.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
   document.querySelector(`.range-btn[data-range="${range}"]`).classList.add('active');
 }
 
-/* Initialize */
-filterByRange('all');
+/* ---------- Initialize ---------- */
+document.addEventListener('DOMContentLoaded', function() {
+  // Animate counter on page load
+  const totalEl = document.getElementById('total-entries');
+  const target = parseInt(totalEl.textContent);
+  let count = 0;
+  const increment = target / 50;
+  
+  const timer = setInterval(() => {
+    count += increment;
+    if (count >= target) {
+      totalEl.textContent = target;
+      clearInterval(timer);
+    } else {
+      totalEl.textContent = Math.ceil(count);
+    }
+  }, 20);
 
-/* Button events */
-document.querySelectorAll('.range-btn').forEach(btn => {
-  btn.addEventListener('click', () => filterByRange(btn.dataset.range));
+  // Initialize with all data
+  filterByRange('all');
+
+  // Button events
+  document.querySelectorAll('.range-btn').forEach(btn => {
+    btn.addEventListener('click', () => filterByRange(btn.dataset.range));
+  });
 });
 </script>
 

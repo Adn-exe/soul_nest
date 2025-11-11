@@ -105,42 +105,66 @@ def logout():
     flash("Logged out successfully.", "success")
     return redirect(url_for('home'))
 
-# ---------- Thoughts Feed ----------
 @app.route('/thoughts')
 @login_required
 def thoughts():
-    mood_filter = request.args.get("mood")  # Get ?mood= from URL
+    # Get the mood filter from query parameters (?mood=)
+    mood_filter = request.args.get("mood")
 
-    query = Thought.query.options(selectinload(Thought.comments)) \
-                         .order_by(Thought.timestamp.desc())
+    # Base query: load comments efficiently and sort by newest first
+    query = (
+        Thought.query
+        .options(selectinload(Thought.comments))
+        .order_by(Thought.timestamp.desc())
+    )
 
+    # Apply mood filtering if selected
     if mood_filter and mood_filter != "all":
         query = query.filter_by(mood=mood_filter)
 
+    # Execute final query
     all_thoughts = query.all()
 
-    return render_template('thoughts.html', thoughts=all_thoughts, selected_mood=mood_filter)
+    # Render template
+    return render_template(
+        'thoughts.html',
+        thoughts=all_thoughts,
+        selected_mood=mood_filter
+    )
+
+
 
 # ---------- Emotional Reflection Journal ----------
 @app.route('/journal')
 @login_required
 def journal():
-    # All posts for this user (we’ll filter on the client without reloading)
+    # All posts for the current user (sorted oldest → newest)
     user_posts = Thought.query.filter_by(user_id=current_user.id)\
                               .order_by(Thought.timestamp.asc()).all()
 
-    # Counts for initial charts
-    mood_counts = Counter([p.mood for p in user_posts])
+    # Count moods
+    mood_counts = Counter([p.mood for p in user_posts if p.mood])
 
-    # JSON-safe posts for charts/timeline
+    # Convert posts to JSON-friendly format
     posts_json = [
         {
             "content": p.content,
             "mood": p.mood,
-            "timestamp": p.timestamp.strftime("%Y-%m-%d")  # ISO-like for JS Date()
+            "timestamp": p.timestamp.isoformat()
         }
         for p in user_posts
     ]
+
+    # Identify MOST liked thought
+    most_liked = max(user_posts, key=lambda p: p.like_count(), default=None)
+
+    return render_template(
+        "journal.html",
+        posts=user_posts,
+        posts_json=posts_json,
+        mood_counts=mood_counts,
+        most_liked=most_liked
+    )
 
     # Dominant thought post (most liked overall)
     all_user_posts = Thought.query.filter_by(user_id=current_user.id).all()
